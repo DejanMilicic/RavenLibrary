@@ -23,7 +23,7 @@ namespace RavenLibrary.Models
 
         public string publisher { get; set; }
 
-        public DateTimeOffset issued { get; set; }
+        public string issued { get; set; }
 
         public string title { get; set; }
 
