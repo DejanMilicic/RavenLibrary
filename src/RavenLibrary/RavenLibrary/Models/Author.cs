@@ -27,8 +27,11 @@ namespace RavenLibrary.Models
 
     public class RemoteIds
     {
-        public int viaf { get; set; }
+        public string viaf { get; set; }
+
         public string wikidata { get; set; }
+
+        public string isni { get; set; }
     }
 
 
