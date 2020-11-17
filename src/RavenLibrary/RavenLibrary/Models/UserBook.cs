@@ -12,7 +12,7 @@ namespace RavenLibrary.Models
 
         public string user { get; set; }
 
-        public int start { get; set; }
+        public long start { get; set; }
 
         public DateTimeOffset at { get; set; }
     }
