@@ -1,0 +1,11 @@
+from UserBooks as ub
+update {
+    var a = {}
+    a.text = ub.text
+    a.book = ub.book
+    a.user = ub.user
+    a.start = ub.start
+    a.at = ub.at
+    a["@metadata"] = {"@collection": "Annotations"}
+    put("Annotations/" + ub.user + "-" + ub.book + "/", a)
+}
