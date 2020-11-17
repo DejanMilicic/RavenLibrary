@@ -15,7 +15,7 @@ namespace RavenLibrary.Models
 
         public DateTimeOffset CreatedAt { get; set; }
 
-        public DateTimeOffset NoteText { get; set; }
+        public string NoteText { get; set; }
 
         public Location Location { get; set; }
     }
