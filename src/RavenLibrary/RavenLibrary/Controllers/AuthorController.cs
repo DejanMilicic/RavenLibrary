@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using RavenLibrary.Models;
 
 namespace RavenLibrary.Controllers
@@ -8,10 +9,10 @@ namespace RavenLibrary.Controllers
     public class AuthorController : ControllerBase
     {
         [HttpGet]
-        public Author Get(string id)
+        public async Task<Author> Get(string id)
         {
-            using var session = DocumentStoreHolder.Store.OpenSession();
-            return session.Load<Author>(id);
+            using var session = DocumentStoreHolder.Store.OpenAsyncSession();
+            return await session.LoadAsync<Author>(id);
         }
     }
 }
