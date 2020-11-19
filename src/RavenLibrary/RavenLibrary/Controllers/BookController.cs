@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RavenLibrary.Models;
 
@@ -13,6 +16,20 @@ namespace RavenLibrary.Controllers
         {
             using var session = DocumentStoreHolder.Store.OpenAsyncSession();
             return await session.LoadAsync<Book>(id);
+        }
+
+        [HttpGet("/GetAll")]
+        public async Task<IEnumerable<Book>> GetAll(string userId)
+        {
+            // todo implement
+            return new List<Book>();
+        }
+
+        [HttpGet("/GetPage")]
+        public async Task<IEnumerable<Book>> GetPage(string userId, int skip, int take)
+        {
+            // todo implement
+            return new List<Book>();
         }
     }
 }
