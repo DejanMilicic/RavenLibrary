@@ -25,8 +25,8 @@ namespace RavenLibrary.Controllers
             return new List<Book>();
         }
 
-        [HttpGet("/GetPage")]
-        public async Task<IEnumerable<Book>> GetPage(string userId, int skip, int take)
+        [HttpGet("/GetRange")]
+        public async Task<IEnumerable<Book>> GetRange(string userId, int skip, int take)
         {
             // todo implement
             return new List<Book>();
