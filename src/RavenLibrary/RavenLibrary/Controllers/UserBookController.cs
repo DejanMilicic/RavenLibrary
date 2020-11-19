@@ -19,9 +19,8 @@ namespace RavenLibrary.Controllers
         public class CreateUserBookModel
         {
             public string User { get; set; }
+
             public string Book { get; set; }
-            public string Text { get; set; }
-            public long Start { get; set; }
         }
 
         [HttpPost]
@@ -32,11 +31,10 @@ namespace RavenLibrary.Controllers
             UserBook userBook = new UserBook
             {
                 Id = $"UsersBooks/{ub.User}-{ub.Book}/",
-                text = ub.Text,
-                book = ub.Book,
-                user = ub.User,
-                start = ub.Start,
-                at = DateTimeOffset.UtcNow
+                UserId = ub.User,
+                BookId = ub.Book,
+                Stars = 0,
+                Created = DateTimeOffset.UtcNow
             };
 
 

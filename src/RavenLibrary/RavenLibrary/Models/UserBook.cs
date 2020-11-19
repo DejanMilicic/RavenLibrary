@@ -10,8 +10,8 @@ namespace RavenLibrary.Models
 
         public string BookId { get; set; }
 
-        public DateTimeOffset Created { get; set; }
-
         public int Stars { get; set; }
+
+        public DateTimeOffset Created { get; set; }
     }
 }
