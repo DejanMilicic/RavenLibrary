@@ -6,14 +6,12 @@ namespace RavenLibrary.Models
     {
         public string Id { get; set; }
 
-        public string text { get; set; }
+        public string UserId { get; set; }
 
-        public string book { get; set; }
+        public string BookId { get; set; }
 
-        public string user { get; set; }
+        public DateTimeOffset Created { get; set; }
 
-        public long start { get; set; }
-
-        public DateTimeOffset at { get; set; }
+        public int Stars { get; set; }
     }
 }
