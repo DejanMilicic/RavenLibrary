@@ -18,15 +18,15 @@ namespace RavenLibrary.Controllers
             return await session.LoadAsync<Book>(id);
         }
 
-        [HttpGet("/GetAll")]
-        public async Task<IEnumerable<Book>> GetAll(string userId)
+        [HttpGet("/user/{userId}/")]
+        public async Task<IEnumerable<Book>> GetUserAll(string userId)
         {
             // todo implement
             return new List<Book>();
         }
 
-        [HttpGet("/GetRange")]
-        public async Task<IEnumerable<Book>> GetRange(string userId, int skip, int take)
+        [HttpGet("/user/{userId}/{skip}/{take}")]
+        public async Task<IEnumerable<Book>> GetUserRange(string userId, int skip, int take)
         {
             // todo implement
             return new List<Book>();
