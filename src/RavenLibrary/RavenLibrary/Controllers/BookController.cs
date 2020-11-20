@@ -11,22 +11,22 @@ namespace RavenLibrary.Controllers
     [Route("[controller]")]
     public class BookController : ControllerBase
     {
-        [HttpGet]
-        public async Task<Book> Get(string id)
+        [HttpGet("/book")]
+        public async Task<Book> GetBook(string id)
         {
             using var session = DocumentStoreHolder.Store.OpenAsyncSession();
             return await session.LoadAsync<Book>(id);
         }
 
-        [HttpGet("/user/{userId}/")]
-        public async Task<IEnumerable<Book>> GetUserAll(string userId)
+        [HttpGet("/books/user/{userId}/")]
+        public async Task<IEnumerable<Book>> GetUserBooks(string userId)
         {
             // todo implement
             return new List<Book>();
         }
 
-        [HttpGet("/user/{userId}/{skip}/{take}")]
-        public async Task<IEnumerable<Book>> GetUserRange(string userId, int skip, int take)
+        [HttpGet("/books/user/{userId}/{skip}/{take}")]
+        public async Task<IEnumerable<Book>> GetUserBooksRange(string userId, int skip, int take)
         {
             // todo implement
             return new List<Book>();
