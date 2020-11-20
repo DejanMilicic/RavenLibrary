@@ -8,7 +8,7 @@ namespace RavenLibrary.Controllers
     [Route("[controller]")]
     public class AuthorController : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("/author")]
         public async Task<Author> Get(string id)
         {
             using var session = DocumentStoreHolder.Store.OpenAsyncSession();

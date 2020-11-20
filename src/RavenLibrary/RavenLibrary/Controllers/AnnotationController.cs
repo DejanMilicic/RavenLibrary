@@ -11,7 +11,7 @@ namespace RavenLibrary.Controllers
     [Route("[controller]")]
     public class AnnotationController : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("/annotation")]
         public Annotation Get(string id)
         {
             using var session = DocumentStoreHolder.Store.OpenSession();
@@ -29,7 +29,7 @@ namespace RavenLibrary.Controllers
             public string Note { get; set; }
         }
 
-        [HttpPost]
+        [HttpPost("/annotation")]
         public string Post([FromBody] CreateAnnotationModel a)
         {
             using var session = DocumentStoreHolder.Store.OpenSession();
@@ -49,6 +49,34 @@ namespace RavenLibrary.Controllers
 
             return annotation.Id;
 
+        }
+
+        [HttpGet("/annotations/user/{userId}")]
+        public async Task<IEnumerable<Book>> GetUserAnnotations(string userId)
+        {
+            // todo implement
+            return new List<Book>();
+        }
+
+        [HttpGet("/annotations/user/{userId}/after/{after}")]
+        public async Task<IEnumerable<Book>> GetUserAnnotationsAfter(string userId, DateTimeOffset after)
+        {
+            // todo implement
+            return new List<Book>();
+        }
+
+        [HttpGet("/annotations/user/{userId}/book/{bookId}")]
+        public async Task<IEnumerable<Book>> GetUserBookAnnotations(string userId, string bookId)
+        {
+            // todo implement
+            return new List<Book>();
+        }
+
+        [HttpGet("/annotations/user/{userId}/book/{bookId}/after/{after}")]
+        public async Task<IEnumerable<Book>> GetUserBookAnnotationsAfter(string userId, string bookId, DateTimeOffset after)
+        {
+            // todo implement
+            return new List<Book>();
         }
     }
 }

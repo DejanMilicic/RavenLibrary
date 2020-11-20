@@ -9,7 +9,7 @@ namespace RavenLibrary.Controllers
     [Route("[controller]")]
     public class UserBookController : ControllerBase
     {
-        [HttpGet]
+        [HttpGet("/userbook")]
         public async Task<UserBook> Get(string id)
         {
             using var session = DocumentStoreHolder.Store.OpenAsyncSession();
@@ -23,7 +23,7 @@ namespace RavenLibrary.Controllers
             public string Book { get; set; }
         }
 
-        [HttpPost]
+        [HttpPost("/userbook")]
         public async Task<string> Post([FromBody] CreateUserBookModel ub)
         {
             using var session = DocumentStoreHolder.Store.OpenAsyncSession();
