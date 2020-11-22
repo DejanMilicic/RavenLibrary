@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +24,11 @@ namespace RavenLibrary.Controllers
         public async Task<IEnumerable<Book>> GetUserBooks(string userId)
         {
             using var session = DocumentStoreHolder.Store.OpenAsyncSession();
-            List<UserBook> userBooks = await session
+            var userBooks = await session
                 .Query<UserBook>()
                 .Where(x => x.UserId == userId)
-                .Include(x => x.BookId).ToListAsync();
+                .Include(x => x.BookId)
+                .ToArrayAsync();
 
             Dictionary<string, Book> books = await session.LoadAsync<Book>(userBooks.Select(x => x.BookId));
             return books.Values.ToList();
@@ -46,13 +45,13 @@ namespace RavenLibrary.Controllers
         public async Task<GetUserBooksRangeResponse> GetUserBooksRange(string userId, int skip, int take)
         {
             using var session = DocumentStoreHolder.Store.OpenAsyncSession();
-            List<UserBook> userBooks = await session
+            var userBooks = await session
                 .Query<UserBook>()
                 .Where(x => x.UserId == userId)
                 .Skip(skip)
                 .Take(take)
                 .Statistics(out QueryStatistics stats)
-                .Include(x => x.BookId).ToListAsync();
+                .Include(x => x.BookId).ToArrayAsync();
 
             Dictionary<string, Book> books = await session.LoadAsync<Book>(userBooks.Select(x => x.BookId));
             return new GetUserBooksRangeResponse
