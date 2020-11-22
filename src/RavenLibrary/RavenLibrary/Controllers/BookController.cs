@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Session;
 using RavenLibrary.Models;
 
 namespace RavenLibrary.Controllers
@@ -21,22 +22,44 @@ namespace RavenLibrary.Controllers
             return await session.LoadAsync<Book>(id);
         }
 
-        [HttpGet("/books/user/{userId}/")]
+        [HttpGet("/books/user/")]
         public async Task<IEnumerable<Book>> GetUserBooks(string userId)
         {
             using var session = DocumentStoreHolder.Store.OpenAsyncSession();
             List<UserBook> userBooks = await session
-                .Query<UserBook>().Include(x => x.BookId).ToListAsync();
+                .Query<UserBook>()
+                .Where(x => x.UserId == userId)
+                .Include(x => x.BookId).ToListAsync();
 
             Dictionary<string, Book> books = await session.LoadAsync<Book>(userBooks.Select(x => x.BookId));
             return books.Values.ToList();
         }
 
-        [HttpGet("/books/user/{userId}/{skip}/{take}")]
-        public async Task<IEnumerable<Book>> GetUserBooksRange(string userId, int skip, int take)
+        public class GetUserBooksRangeResponse
         {
-            // todo implement
-            return new List<Book>();
+            public IEnumerable<Book> BooksPage { get; set; }
+
+            public int BooksTotal { get; set; }
+        }
+
+        [HttpGet("/books/user/{skip}/{take}")]
+        public async Task<GetUserBooksRangeResponse> GetUserBooksRange(string userId, int skip, int take)
+        {
+            using var session = DocumentStoreHolder.Store.OpenAsyncSession();
+            List<UserBook> userBooks = await session
+                .Query<UserBook>()
+                .Where(x => x.UserId == userId)
+                .Skip(skip)
+                .Take(take)
+                .Statistics(out QueryStatistics stats)
+                .Include(x => x.BookId).ToListAsync();
+
+            Dictionary<string, Book> books = await session.LoadAsync<Book>(userBooks.Select(x => x.BookId));
+            return new GetUserBooksRangeResponse
+            {
+                BooksPage = books.Values,
+                BooksTotal = stats.TotalResults
+            };
         }
     }
 }
