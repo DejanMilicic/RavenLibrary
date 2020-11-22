@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -57,12 +58,28 @@ namespace RavenLibrary.Controllers
         public async Task<IEnumerable<Annotation>> GetUserBookAnnotations(string userBookId)
         {
             using var session = DocumentStoreHolder.Store.OpenAsyncSession();
-            var annotations = await session
+
+            return await session
                 .Query<Annotation>()
                 .Where(x => x.UserBookId == userBookId)
                 .ToArrayAsync();
+        }
 
-            return annotations;
+        [HttpGet("/annotations/")]
+        public async Task<IEnumerable<Annotation>> GetAnnotationsForUserForBook(string userId, string bookId)
+        {
+            using var session = DocumentStoreHolder.Store.OpenAsyncSession();
+
+            UserBook userBook = await session
+                .Query<UserBook>()
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.BookId == bookId);
+
+            if (userBook == null) return Enumerable.Empty<Annotation>();
+
+            return await session
+                .Query<Annotation>()
+                .Where(x => x.UserBookId == userBook.Id)
+                .ToArrayAsync();
         }
 
         [HttpGet("/annotations/user/{userId}/after/{after}")]
