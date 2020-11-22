@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
 using RavenLibrary.Models;
 
 namespace RavenLibrary.Controllers
@@ -51,11 +53,16 @@ namespace RavenLibrary.Controllers
 
         }
 
-        [HttpGet("/annotations/user/{userId}")]
-        public async Task<IEnumerable<Book>> GetUserAnnotations(string userId)
+        [HttpGet("/annotations/userbook/")]
+        public async Task<IEnumerable<Annotation>> GetUserBookAnnotations(string userBookId)
         {
-            // todo implement
-            return new List<Book>();
+            using var session = DocumentStoreHolder.Store.OpenAsyncSession();
+            var annotations = await session
+                .Query<Annotation>()
+                .Where(x => x.UserBookId == userBookId)
+                .ToArrayAsync();
+
+            return annotations;
         }
 
         [HttpGet("/annotations/user/{userId}/after/{after}")]
