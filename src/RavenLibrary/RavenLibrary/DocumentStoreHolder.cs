@@ -1,5 +1,6 @@
 ﻿using System;
 using Raven.Client.Documents;
+using Raven.Client.ServerWide.Operations;
 
 namespace RavenLibrary
 {
@@ -8,13 +9,21 @@ namespace RavenLibrary
         private static readonly Lazy<IDocumentStore> LazyStore =
             new Lazy<IDocumentStore>(() =>
             {
-                var store = new DocumentStore
+                string db = "Library";
+
+                IDocumentStore store = new DocumentStore()
                 {
                     Urls = new[] { "http://localhost:8080" },
-                    Database = "Library"
+                    Database = db
                 };
 
-                return store.Initialize();
+                store = store.Initialize();
+
+                var dbr = store.Maintenance.Server.Send(new GetDatabaseRecordOperation(db));
+                dbr.Settings["Indexing.DisableQueryOptimizerGeneratedIndexes"] = true.ToString();
+                store.Maintenance.Server.Send(new UpdateDatabaseOperation(dbr, dbr.Etag));
+
+                return store;
             });
 
         public static IDocumentStore Store => LazyStore.Value;
