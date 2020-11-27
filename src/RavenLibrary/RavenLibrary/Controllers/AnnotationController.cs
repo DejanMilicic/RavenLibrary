@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Session;
 using RavenLibrary.Models;
 
 namespace RavenLibrary.Controllers
@@ -14,11 +14,17 @@ namespace RavenLibrary.Controllers
     [Route("[controller]")]
     public class AnnotationController : ControllerBase
     {
-        [HttpGet("/annotation")]
-        public Annotation Get(string id)
+        private readonly IAsyncDocumentSession _session;
+
+        public AnnotationController(IAsyncDocumentSession session)
         {
-            using var session = DocumentStoreHolder.Store.OpenSession();
-            return session.Load<Annotation>(id);
+            _session = session;
+        }
+
+        [HttpGet("/annotation")]
+        public async Task<Annotation> Get(string id)
+        {
+            return await _session.LoadAsync<Annotation>(id);
         }
 
         public class CreateAnnotationModel
@@ -33,10 +39,8 @@ namespace RavenLibrary.Controllers
         }
 
         [HttpPost("/annotation")]
-        public string Post([FromBody] CreateAnnotationModel a)
+        public async Task<string> Post([FromBody] CreateAnnotationModel a)
         {
-            using var session = DocumentStoreHolder.Store.OpenSession();
-
             Annotation annotation = new Annotation
             {
                 UserBookId = a.UserBookId,
@@ -47,8 +51,8 @@ namespace RavenLibrary.Controllers
             };
 
 
-            session.Store(annotation);
-            session.SaveChanges();
+            await _session.StoreAsync(annotation);
+            await _session.SaveChangesAsync();
 
             return annotation.Id;
 
@@ -57,9 +61,7 @@ namespace RavenLibrary.Controllers
         [HttpGet("/annotations/userbook/")]
         public async Task<IEnumerable<Annotation>> GetUserBookAnnotations(string userBookId)
         {
-            using var session = DocumentStoreHolder.Store.OpenAsyncSession();
-
-            return await session
+            return await _session
                 .Query<Annotation>()
                 .Where(x => x.UserBookId == userBookId)
                 .ToArrayAsync();
@@ -68,15 +70,13 @@ namespace RavenLibrary.Controllers
         [HttpGet("/annotations/")]
         public async Task<IEnumerable<Annotation>> GetAnnotationsForUserForBook(string userId, string bookId)
         {
-            using var session = DocumentStoreHolder.Store.OpenAsyncSession();
-
-            UserBook userBook = await session
+            UserBook userBook = await _session
                 .Query<UserBook>()
                 .FirstOrDefaultAsync(x => x.UserId == userId && x.BookId == bookId);
 
             if (userBook == null) return Enumerable.Empty<Annotation>();
 
-            return await session
+            return await _session
                 .Query<Annotation>()
                 .Where(x => x.UserBookId == userBook.Id)
                 .ToArrayAsync();

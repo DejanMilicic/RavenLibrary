@@ -13,24 +13,29 @@ namespace RavenLibrary.Controllers
     [Route("[controller]")]
     public class BookController : ControllerBase
     {
+        private readonly IAsyncDocumentSession _session;
+
+        public BookController(IAsyncDocumentSession session)
+        {
+            _session = session;
+        }
+
         [HttpGet("/book")]
         public async Task<Book> GetBook(string id)
         {
-            using var session = DocumentStoreHolder.Store.OpenAsyncSession();
-            return await session.LoadAsync<Book>(id);
+            return await _session.LoadAsync<Book>(id);
         }
 
         [HttpGet("/books/user/")]
         public async Task<IEnumerable<Book>> GetUserBooks(string userId)
         {
-            using var session = DocumentStoreHolder.Store.OpenAsyncSession();
-            var userBooks = await session
+            var userBooks = await _session
                 .Query<UserBook>()
                 .Where(x => x.UserId == userId)
                 .Include(x => x.BookId)
                 .ToArrayAsync();
 
-            Dictionary<string, Book> books = await session.LoadAsync<Book>(userBooks.Select(x => x.BookId));
+            Dictionary<string, Book> books = await _session.LoadAsync<Book>(userBooks.Select(x => x.BookId));
             return books.Values.ToList();
         }
 
@@ -44,8 +49,7 @@ namespace RavenLibrary.Controllers
         [HttpGet("/books/user/{skip}/{take}")]
         public async Task<GetUserBooksRangeResponse> GetUserBooksRange(string userId, int skip, int take)
         {
-            using var session = DocumentStoreHolder.Store.OpenAsyncSession();
-            var userBooks = await session
+            var userBooks = await _session
                 .Query<UserBook>()
                 .Where(x => x.UserId == userId)
                 .Skip(skip)
@@ -53,7 +57,7 @@ namespace RavenLibrary.Controllers
                 .Statistics(out QueryStatistics stats)
                 .Include(x => x.BookId).ToArrayAsync();
 
-            Dictionary<string, Book> books = await session.LoadAsync<Book>(userBooks.Select(x => x.BookId));
+            Dictionary<string, Book> books = await _session.LoadAsync<Book>(userBooks.Select(x => x.BookId));
             return new GetUserBooksRangeResponse
             {
                 BooksPage = books.Values,

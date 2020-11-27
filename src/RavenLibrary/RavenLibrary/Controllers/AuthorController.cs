@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Raven.Client.Documents.Session;
 using RavenLibrary.Models;
 
 namespace RavenLibrary.Controllers
@@ -8,11 +9,17 @@ namespace RavenLibrary.Controllers
     [Route("[controller]")]
     public class AuthorController : ControllerBase
     {
+        private readonly IAsyncDocumentSession _session;
+
+        public AuthorController(IAsyncDocumentSession session)
+        {
+            _session = session;
+        }
+
         [HttpGet("/author")]
         public async Task<Author> Get(string id)
         {
-            using var session = DocumentStoreHolder.Store.OpenAsyncSession();
-            return await session.LoadAsync<Author>(id);
+            return await _session.LoadAsync<Author>(id);
         }
     }
 }

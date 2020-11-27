@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Raven.Client.Documents.Session;
 using RavenLibrary.Models;
 
 namespace RavenLibrary.Controllers
@@ -9,11 +10,17 @@ namespace RavenLibrary.Controllers
     [Route("[controller]")]
     public class UserBookController : ControllerBase
     {
+        private readonly IAsyncDocumentSession _session;
+
+        public UserBookController(IAsyncDocumentSession session)
+        {
+            _session = session;
+        }
+
         [HttpGet("/userbook")]
         public async Task<UserBook> Get(string id)
         {
-            using var session = DocumentStoreHolder.Store.OpenAsyncSession();
-            return await session.LoadAsync<UserBook>(id);
+            return await _session.LoadAsync<UserBook>(id);
         }
 
         public class CreateUserBookModel
@@ -26,8 +33,6 @@ namespace RavenLibrary.Controllers
         [HttpPost("/userbook")]
         public async Task<string> Post([FromBody] CreateUserBookModel ub)
         {
-            using var session = DocumentStoreHolder.Store.OpenAsyncSession();
-
             UserBook userBook = new UserBook
             {
                 Id = $"UsersBooks/{ub.User}-{ub.Book}/",
@@ -38,8 +43,8 @@ namespace RavenLibrary.Controllers
             };
 
 
-            await session.StoreAsync(userBook);
-            await session.SaveChangesAsync();
+            await _session.StoreAsync(userBook);
+            await _session.SaveChangesAsync();
 
             return userBook.Id;
         }
