@@ -9,21 +9,13 @@ namespace RavenLibrary
         private static readonly Lazy<IDocumentStore> LazyStore =
             new Lazy<IDocumentStore>(() =>
             {
-                string db = "Library";
-
-                IDocumentStore store = new DocumentStore()
+                var store = new DocumentStore
                 {
                     Urls = new[] { "http://localhost:8080" },
-                    Database = db
+                    Database = "Library"
                 };
 
-                store = store.Initialize();
-
-                var dbr = store.Maintenance.Server.Send(new GetDatabaseRecordOperation(db));
-                dbr.Settings["Indexing.DisableQueryOptimizerGeneratedIndexes"] = true.ToString();
-                store.Maintenance.Server.Send(new UpdateDatabaseOperation(dbr, dbr.Etag));
-
-                return store;
+                return store.Initialize();
             });
 
         public static IDocumentStore Store => LazyStore.Value;
