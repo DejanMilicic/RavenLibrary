@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Raven.Client.Documents.Session;
 using RavenLibrary.Models;
+using RavenLibrary.Shared;
 
 namespace RavenLibrary.Controllers
 {
@@ -35,7 +36,7 @@ namespace RavenLibrary.Controllers
         {
             UserBook userBook = new UserBook
             {
-                Id = $"UsersBooks/{ub.User}-{ub.Book}/",
+                Id = Util.GetUserBookId(ub.User, ub.Book),
                 UserId = ub.User,
                 BookId = ub.Book,
                 Stars = 0,
