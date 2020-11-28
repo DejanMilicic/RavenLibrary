@@ -7,6 +7,7 @@ using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using RavenLibrary.Models;
+using RavenLibrary.Shared;
 
 namespace RavenLibrary.Controllers
 {
@@ -55,7 +56,15 @@ namespace RavenLibrary.Controllers
             await _session.SaveChangesAsync();
 
             return annotation.Id;
+        }
 
+        [HttpGet("/annotations/user/")]
+        public async Task<IEnumerable<Annotation>> GetUserAnnotations(string userId)
+        {
+            return await _session
+                .Query<Annotation>()
+                .Where(x => x.UserBookId.StartsWith(Util.GetUserBookIdPrefix(userId)))
+                .ToArrayAsync();
         }
 
         [HttpGet("/annotations/userbook/")]

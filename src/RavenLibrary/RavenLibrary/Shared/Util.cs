@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace RavenLibrary.Shared
+﻿namespace RavenLibrary.Shared
 {
     public static class Util
     {
+        static string usersBooksCollection = "UsersBooks";
+
         public static string GetUserBookId(string userId, string bookId)
         {
-            return $"UsersBooks/{userId}-{bookId}/";
+            return $"{usersBooksCollection}/{userId}-{bookId}/";
+        }
+        public static string GetUserBookIdPrefix(string userId)
+        {
+            return $"{usersBooksCollection}/{userId}-";
         }
     }
 }
