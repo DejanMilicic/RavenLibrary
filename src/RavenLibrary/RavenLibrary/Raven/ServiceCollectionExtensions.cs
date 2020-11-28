@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Raven.Client.Documents;
+using Raven.Client.Documents.Indexes;
+using RavenLibrary.Raven.Indexes;
 
 namespace RavenLibrary.Raven
 {
@@ -14,6 +16,8 @@ namespace RavenLibrary.Raven
             };
 
             store.Initialize();
+
+            IndexCreation.CreateIndexes(typeof(UserBook_ByUser_ByBook).Assembly, store);
 
             services.AddSingleton<IDocumentStore>(store);
 

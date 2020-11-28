@@ -6,6 +6,7 @@ using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using RavenLibrary.Models;
+using RavenLibrary.Raven.Indexes;
 
 namespace RavenLibrary.Controllers
 {
@@ -30,7 +31,7 @@ namespace RavenLibrary.Controllers
         public async Task<IEnumerable<Book>> GetUserBooks(string userId)
         {
             var userBooks = await _session
-                .Query<UserBook>()
+                .Query<UserBook_ByUser_ByBook.Result, UserBook_ByUser_ByBook>()
                 .Where(x => x.UserId == userId)
                 .Include(x => x.BookId)
                 .ToArrayAsync();
