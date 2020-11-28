@@ -51,12 +51,13 @@ namespace RavenLibrary.Controllers
         public async Task<GetUserBooksRangeResponse> GetUserBooksRange(string userId, int skip, int take)
         {
             var userBooks = await _session
-                .Query<UserBook>()
+                .Query<UserBook_ByUser_ByBook.Result, UserBook_ByUser_ByBook>()
                 .Where(x => x.UserId == userId)
                 .Skip(skip)
                 .Take(take)
                 .Statistics(out QueryStatistics stats)
-                .Include(x => x.BookId).ToArrayAsync();
+                .Include(x => x.BookId)
+                .ToArrayAsync();
 
             Dictionary<string, Book> books = await _session.LoadAsync<Book>(userBooks.Select(x => x.BookId));
             return new GetUserBooksRangeResponse
