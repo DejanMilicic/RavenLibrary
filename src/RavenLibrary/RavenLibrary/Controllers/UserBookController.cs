@@ -36,7 +36,7 @@ namespace RavenLibrary.Controllers
         {
             UserBook userBook = new UserBook
             {
-                Id = Util.GetUserBookId(ub.User, ub.Book),
+                Id = Util.GetUserBookCollection(ub.User, ub.Book),
                 UserId = ub.User,
                 BookId = ub.Book,
                 Stars = 0,

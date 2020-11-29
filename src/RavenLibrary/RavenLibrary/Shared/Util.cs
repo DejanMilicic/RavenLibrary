@@ -4,11 +4,12 @@
     {
         static string usersBooksCollection = "UsersBooks";
 
-        public static string GetUserBookId(string userId, string bookId)
+        public static string GetUserBookCollection(string userId, string bookId)
         {
             return $"{usersBooksCollection}/{userId}-{bookId}/";
         }
-        public static string GetUserBookIdPrefix(string userId)
+
+        public static string GetUserBookCollectionUserPrefix(string userId)
         {
             return $"{usersBooksCollection}/{userId}-";
         }

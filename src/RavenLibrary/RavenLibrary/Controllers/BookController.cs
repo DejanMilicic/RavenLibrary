@@ -60,6 +60,7 @@ namespace RavenLibrary.Controllers
                 .ToArrayAsync();
 
             Dictionary<string, Book> books = await _session.LoadAsync<Book>(userBooks.Select(x => x.BookId));
+
             return new GetUserBooksRangeResponse
             {
                 BooksPage = books.Values,

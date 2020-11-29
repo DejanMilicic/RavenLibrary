@@ -7,6 +7,7 @@ using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using RavenLibrary.Models;
+using RavenLibrary.Raven.Indexes;
 using RavenLibrary.Shared;
 
 namespace RavenLibrary.Controllers
@@ -63,7 +64,7 @@ namespace RavenLibrary.Controllers
         {
             return await _session
                 .Query<Annotation>()
-                .Where(x => x.UserBookId.StartsWith(Util.GetUserBookIdPrefix(userId)))
+                .Where(x => x.UserBookId.StartsWith(Util.GetUserBookCollectionUserPrefix(userId)))
                 .ToArrayAsync();
         }
 
@@ -71,24 +72,24 @@ namespace RavenLibrary.Controllers
         {
             public IEnumerable<Annotation> AnnotationsPage { get; set; }
 
-            public int AnnotationsTotal { get; set; }
+            public int Total { get; set; }
         }
 
         [HttpGet("/annotations/user/{skip}/{take}")]
         public async Task<GetUserAnnotationsRangeResponse> GetUserAnnotationsRange(string userId, int skip, int take)
         {
-            var annotations = await _session
-                .Query<Annotation>()
-                .Where(x => x.UserBookId.StartsWith(Util.GetUserBookIdPrefix(userId)))
+            var userAnnotations = await _session
+                .Query<Annotation, Annotations_ByUserBook>()
                 .Skip(skip)
                 .Take(take)
                 .Statistics(out QueryStatistics stats)
+                .Where(x => x.UserBookId.StartsWith(Util.GetUserBookCollectionUserPrefix(userId)))
                 .ToArrayAsync();
 
             return new GetUserAnnotationsRangeResponse
             {
-                AnnotationsPage = annotations,
-                AnnotationsTotal = stats.TotalResults
+                AnnotationsPage = userAnnotations,
+                Total = stats.TotalResults
             };
         }
 
