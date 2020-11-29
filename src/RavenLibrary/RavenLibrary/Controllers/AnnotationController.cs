@@ -97,7 +97,7 @@ namespace RavenLibrary.Controllers
         public async Task<IEnumerable<Annotation>> GetUserBookAnnotations(string userBookId)
         {
             return await _session
-                .Query<Annotation>()
+                .Query<Annotation, Annotations_ByUserBook>()
                 .Where(x => x.UserBookId == userBookId)
                 .ToArrayAsync();
         }
