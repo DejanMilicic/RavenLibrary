@@ -7,7 +7,7 @@
 	+ get all books for a user
 	+ get all annotations for a user, for all books
 	+ get paged annotations for a user, for all books
-	- get all annotations for a user, for specific book
+	+ get all annotations for a user, for specific book
 	- get paged annotations for a user, for specific book
 3. [Subsequent Syncs] 
 	- get all user annotations that have changed (added, updated, deleted) since Date X
