@@ -130,17 +130,17 @@ namespace RavenLibrary.Controllers
         }
 
         [HttpGet("/annotations/user/after/")]
-        public async Task<IEnumerable<Book>> GetUserAnnotationsAfter(string userId, DateTimeOffset after)
+        public async Task<IEnumerable<Annotation>> GetUserAnnotationsAfter(string userId, DateTimeOffset after)
         {
             // todo implement
-            return new List<Book>();
+            return new List<Annotation>();
         }
 
         [HttpGet("/annotations/user/book/after/")]
-        public async Task<IEnumerable<Book>> GetUserBookAnnotationsAfter(string userId, string bookId, DateTimeOffset after)
+        public async Task<IEnumerable<Annotation>> GetUserBookAnnotationsAfter(string userId, string bookId, DateTimeOffset after)
         {
             // todo implement
-            return new List<Book>();
+            return new List<Annotation>();
         }
     }
 }
