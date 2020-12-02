@@ -12,6 +12,3 @@
 3. [Subsequent Syncs] 
 	- get all user annotations that have changed (added, updated, deleted) since Date X
 
-# JMeter
-
-https://www.c-sharpcorner.com/article/webapi-performance-testing-using-apache-jmeter/
