@@ -10,8 +10,10 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Raven.Client.Documents;
+using Raven.Client.Documents.Indexes;
 using Raven.TestDriver;
 using RavenLibrary.Models;
+using RavenLibrary.Raven.Indexes;
 using Xunit;
 
 namespace RavenLibrary.Test
@@ -24,6 +26,7 @@ namespace RavenLibrary.Test
         public HealthCheckTests(WebApplicationFactory<Startup> factory)
         {
             _store = this.GetDocumentStore();
+            IndexCreation.CreateIndexes(typeof(UserBook_ByUser_ByBook).Assembly, _store);
 
             _httpClient = factory.WithWebHostBuilder(builder =>
                 {
