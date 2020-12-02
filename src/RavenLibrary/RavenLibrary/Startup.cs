@@ -11,7 +11,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Indexes;
+using Raven.Client.Documents.Session;
 using RavenLibrary.Raven;
+using RavenLibrary.Raven.Indexes;
 
 namespace RavenLibrary
 {
@@ -35,9 +39,22 @@ namespace RavenLibrary
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RavenLibrary", Version = "v1" });
             });
 
-            services
-                .AddRavenDocumentStore()
-                .AddRavenAsyncSession();
+            services.AddSingleton<IDocumentStore>(_ =>
+            {
+                var store = new DocumentStore
+                {
+                    Urls = new[] { "http://localhost:8080" },
+                    Database = "Library"
+                };
+
+                store.Initialize();
+
+                IndexCreation.CreateIndexes(typeof(UserBook_ByUser_ByBook).Assembly, store);
+                
+                return store;
+            });
+
+            services.AddScoped<IAsyncDocumentSession>(sp => sp.GetService<IDocumentStore>()?.OpenAsyncSession());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
