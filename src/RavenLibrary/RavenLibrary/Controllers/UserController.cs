@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Raven.Client.Documents.Session;
 using RavenLibrary.Models;
@@ -20,6 +21,35 @@ namespace RavenLibrary.Controllers
         public async Task<User> Get(string id)
         {
             return await _session.LoadAsync<User>(id);
+        }
+
+        public class CreateUserModel
+        {
+            public string Name { get; set; }
+
+            public int Karma_Comments { get; set; }
+
+            public int Karma_Links { get; set; }
+        }
+
+        [HttpPost("/user")]
+        public async Task<string> Post([FromBody] CreateUserModel u)
+        {
+            User user = new User
+            {
+                Name = u.Name,
+                Karma = new Karma
+                {
+                    Comments = u.Karma_Comments,
+                    Links = u.Karma_Links
+                },
+                Created = DateTimeOffset.UtcNow
+            };
+
+            await _session.StoreAsync(user);
+            await _session.SaveChangesAsync();
+
+            return user.Id;
         }
     }
 }
