@@ -16,7 +16,10 @@ export let options = {
 const BASE_URL = 'https://localhost:5001';
 
 export default () => {
-  let user = http.get(`${BASE_URL}/user?id=users/164496167832`).json();
+  let res = http.get(`${BASE_URL}/user?id=users/164496167832`);
+  check(res, {'status == 200': (r) => r.status === 200 });
+
+  let user = res.json();
   check(user, { 'user retreived': (u) => u.id == 'users/164496167832' });
 
   sleep(1);
