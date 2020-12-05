@@ -1,20 +1,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Cryptography.X509Certificates;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Indexes;
 using Raven.Client.Documents.Session;
-using RavenLibrary.Raven;
+using RavenLibrary.Infrastructure;
 using RavenLibrary.Raven.Indexes;
 
 namespace RavenLibrary
@@ -41,11 +35,16 @@ namespace RavenLibrary
 
             services.AddSingleton<IDocumentStore>(_ =>
             {
+                var dbConfig = Configuration.GetSection("Database").Get<Settings.DatabaseSettings>();
+
                 var store = new DocumentStore
                 {
-                    Urls = new[] { "http://localhost:8080" },
-                    Database = "Library"
+                    Urls = dbConfig.Urls,
+                    Database = dbConfig.DatabaseName
                 };
+
+                if (!string.IsNullOrWhiteSpace(dbConfig.CertPath))
+                    store.Certificate = new X509Certificate2(dbConfig.CertPath, dbConfig.CertPass);
 
                 store.Initialize();
 
