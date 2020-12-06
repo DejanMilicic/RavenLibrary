@@ -17,10 +17,8 @@ export let options = {
 export default () => {
   let headers = { 'Content-Type': 'application/json' };
 
-  //let userName = faker.name.findName();
-  //let userKarmaComments = faker.random.number({min: 0, max: 300});
-  //let userKarmaLinks = faker.random.number({min: 0, max: 500});
-  let data = { subject: ["subject"] };
+  let subjectArr = faker.lorem.words(faker.random.number({min: 1, max: 9})).split(' ');
+  let data = { subject: subjectArr };
   
   let res = http.post(`${__ENV.BASE_URL}/book`, JSON.stringify(data), { headers: headers });
 
