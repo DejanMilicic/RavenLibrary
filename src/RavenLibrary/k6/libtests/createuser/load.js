@@ -28,7 +28,9 @@ export default () => {
   let headers = { 'Content-Type': 'application/json' };
 
   let userName = faker.name.findName();
-  let data = { name: userName, karma_comments: 15, karma_links: 66 };
+  let userKarmaComments = faker.random.number({min: 0, max: 300});
+  let userKarmaLinks = faker.random.number({min: 0, max: 500});
+  let data = { name: userName, karma_comments: userKarmaComments, karma_links: userKarmaLinks };
   
   let res = http.post(`${BASE_URL}/user`, JSON.stringify(data), { headers: headers });
 
