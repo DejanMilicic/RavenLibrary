@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Operations;
 using Raven.Client.Documents.Session;
 using RavenLibrary.Models;
 
@@ -21,6 +24,24 @@ namespace RavenLibrary.Controllers
         public async Task<User> Get(string id)
         {
             return await _session.LoadAsync<User>(id);
+        }
+
+        [HttpGet("/user/random")]
+        public async Task<User> GetRandom()
+        {
+            var cs = await _session.Advanced.DocumentStore
+                .Maintenance.SendAsync(new GetCollectionStatisticsOperation());
+
+            int totalUsersCount = (int)cs.Collections["Users"];
+
+            Random r = new Random();
+            int randomUserOrdinal = r.Next(1, totalUsersCount)-1;
+
+            var randomUser = await _session.Query<User>()
+                .Skip(randomUserOrdinal)
+                .Take(1).SingleAsync();
+
+            return randomUser;
         }
 
         public class CreateUserModel
