@@ -14,17 +14,7 @@ export let options = {
   },
 };
 
-const BASE_URL = 'https://localhost:5001';
-
-const COMMON_REQUEST_HEADERS = {
-  'Accept': 'application/json',
-  'Content-Type': 'application/json',
-  accept: '*/*'
-};
-
-
 export default () => {
-  const url = 'https://localhost:5001/user';
   let headers = { 'Content-Type': 'application/json' };
 
   let userName = faker.name.findName();
@@ -32,10 +22,7 @@ export default () => {
   let userKarmaLinks = faker.random.number({min: 0, max: 500});
   let data = { name: userName, karma_comments: userKarmaComments, karma_links: userKarmaLinks };
   
-  let res = http.post(`${BASE_URL}/user`, JSON.stringify(data), { headers: headers });
-
-  headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
-  res = http.post(url, data, { headers: headers });
+  let res = http.post(`${__ENV.BASE_URL}/user`, JSON.stringify(data), { headers: headers });
 
   errorRate.add(res.status >= 400)
 

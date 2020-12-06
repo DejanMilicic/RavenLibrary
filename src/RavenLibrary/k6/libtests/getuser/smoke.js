@@ -6,15 +6,12 @@ export let options = {
   duration: '20s',
 
   thresholds: {
-    http_req_duration: ['p(99)<1500'], // 99% of requests must complete below 1.5s
+    http_req_duration: ['p(95)<1500'], // 95% of requests must complete below 1.5s
   },
 };
 
-const BASE_URL = 'https://localhost:5001';
-
 export default () => {
-  let user = http.get(`${BASE_URL}/user?id=users/164496167832`).json();
-  check(user, { 'user retreived': (u) => u.id == 'users/164496167832' });
+  let user = http.get(`${__ENV.BASE_URL}/user?id=users/164496167832`).json();
 
   sleep(1);
 };

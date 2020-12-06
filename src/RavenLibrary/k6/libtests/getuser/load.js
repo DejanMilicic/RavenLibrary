@@ -16,18 +16,13 @@ export let options = {
   },
 };
 
-const BASE_URL = 'https://localhost:5001';
-
 export default () => {
-  let res = http.get(`${BASE_URL}/user/random`);
+  let res = http.get(`${__ENV.BASE_URL}/user/random`);
   //console.log(JSON.parse(res.body).id);
 
   errorRate.add(res.status >= 400)
 
   check(res, {'status == 200': (r) => r.status === 200 });
-
-  let user = res.json();
-  check(user, { 'user retreived': (u) => u.id == 'users/164496167832' });
 
   sleep(1);
 };
