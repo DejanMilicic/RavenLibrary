@@ -18,7 +18,13 @@ export default () => {
   let headers = { 'Content-Type': 'application/json' };
 
   let subjectArr = faker.lorem.words(faker.random.number({min: 1, max: 9})).split(' ');
-  let data = { subject: subjectArr };
+  let languageVal = faker.random.arrayElement(["en","de","en","es","en"]);
+  let bookshelfArr = faker.lorem.words(faker.random.number({min: 1, max: 4})).split(' ');
+  let data = { 
+    subject: subjectArr, 
+    language: [ languageVal ],
+    bookshelf: bookshelfArr
+  };
   
   let res = http.post(`${__ENV.BASE_URL}/book`, JSON.stringify(data), { headers: headers });
 

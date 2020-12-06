@@ -25,6 +25,10 @@ namespace RavenLibrary.Controllers
         public class CreateBookModel
         {
             public List<string> Subject { get; set; }
+
+            public List<string> Language { get; set; }
+
+            public List<string> Bookshelf { get; set; }
         }
 
         [HttpPost("/book")]
@@ -32,14 +36,10 @@ namespace RavenLibrary.Controllers
         {
             Book book = new Book
             {
-                subject = b.Subject
-                //UserBookId = a.UserBookId,
-                //Text = a.Text,
-                //Start = a.Start,
-                //Note = a.Note,
-                //Created = DateTimeOffset.UtcNow
+                subject = b.Subject,
+                language = b.Language,
+                bookshelf = b.Bookshelf
             };
-
 
             await _session.StoreAsync(book);
             await _session.SaveChangesAsync();
