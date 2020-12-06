@@ -19,7 +19,9 @@ export let options = {
 const BASE_URL = 'https://localhost:5001';
 
 export default () => {
-  let res = http.get(`${BASE_URL}/user?id=users/164496167832`);
+  let res = http.get(`${BASE_URL}/user/random`);
+  //console.log(JSON.parse(res.body).id);
+
   errorRate.add(res.status >= 400)
 
   check(res, {'status == 200': (r) => r.status === 200 });
