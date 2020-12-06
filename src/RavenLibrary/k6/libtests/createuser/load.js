@@ -26,7 +26,10 @@ const COMMON_REQUEST_HEADERS = {
 export default () => {
   const url = 'https://localhost:5001/user';
   let headers = { 'Content-Type': 'application/json' };
-  let data = { name: faker.name.findName(), karma_comments: 15, karma_links: 66 };
+
+  let userName = faker.name.findName();
+  let data = { name: userName, karma_comments: 15, karma_links: 66 };
+  
   let res = http.post(`${BASE_URL}/user`, JSON.stringify(data), { headers: headers });
 
   headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
