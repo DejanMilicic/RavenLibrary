@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,31 @@ namespace RavenLibrary.Controllers
         public BookController(IAsyncDocumentSession session)
         {
             _session = session;
+        }
+
+        public class CreateBookModel
+        {
+            public List<string> Subject { get; set; }
+        }
+
+        [HttpPost("/book")]
+        public async Task<string> Post([FromBody] CreateBookModel b)
+        {
+            Book book = new Book
+            {
+                subject = b.Subject
+                //UserBookId = a.UserBookId,
+                //Text = a.Text,
+                //Start = a.Start,
+                //Note = a.Note,
+                //Created = DateTimeOffset.UtcNow
+            };
+
+
+            await _session.StoreAsync(book);
+            await _session.SaveChangesAsync();
+
+            return book.Id;
         }
 
         [HttpGet("/book")]
