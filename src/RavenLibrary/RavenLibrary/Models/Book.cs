@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace RavenLibrary.Models
 {
@@ -30,8 +27,5 @@ namespace RavenLibrary.Models
         public string rights { get; set; }
 
         public string type { get; set; }
-
-        // TODO: fix handling of this property
-        //public Uri en.wikipedia { get; set; }
     }
 }
