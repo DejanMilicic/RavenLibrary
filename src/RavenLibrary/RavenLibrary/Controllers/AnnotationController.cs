@@ -49,9 +49,8 @@ namespace RavenLibrary.Controllers
                 Text = a.Text,
                 Start = a.Start,
                 Note = a.Note,
-                Created = DateTimeOffset.UtcNow
+                Created = DateTimeOffset.UtcNow // todo parametrize
             };
-
 
             await _session.StoreAsync(annotation);
             await _session.SaveChangesAsync();
