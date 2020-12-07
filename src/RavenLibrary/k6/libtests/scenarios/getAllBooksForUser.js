@@ -12,6 +12,8 @@ export let options = {
     { duration: '10s', target: 0 }, // ramp-down to 0 users
   ],
 
+  summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)', 'p(99.9)', 'p(99.99)'],
+
   thresholds: {
     http_req_duration: ['p(99)<500', 'p(99.9)<1000'],
   },
