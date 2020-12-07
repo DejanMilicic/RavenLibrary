@@ -46,7 +46,6 @@ namespace RavenLibrary.Controllers
                 Created = DateTimeOffset.UtcNow
             };
 
-
             await _session.StoreAsync(userBook);
             await _session.SaveChangesAsync();
 
