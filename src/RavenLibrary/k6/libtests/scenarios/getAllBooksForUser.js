@@ -7,9 +7,9 @@ let errorRate = new Rate('error_rate')
 
 export let options = {
   stages: [
-    { duration: '30s', target: 100 }, // simulate ramp-up of traffic from 1 to 100
-    { duration: '1m', target: 100 }, // stay at 100 users
-    { duration: '30s', target: 0 }, // ramp-down to 0 users
+    { duration: '10s', target: 500 }, // simulate ramp-up of traffic
+    { duration: '30s', target: 500 }, // stay at top limit of users
+    { duration: '10s', target: 0 }, // ramp-down to 0 users
   ],
 
   thresholds: {
