@@ -29,6 +29,22 @@ namespace RavenLibrary.Controllers
             public List<string> Language { get; set; }
 
             public List<string> Bookshelf { get; set; }
+
+            public string TableOfContents { get; set; }
+
+            public int Downloads { get; set; }
+
+            public List<string> Creator { get; set; }
+
+            public string Publisher { get; set; }
+
+            public string Issued { get; set; }
+
+            public string Title { get; set; }
+
+            public string Rights { get; set; }
+
+            public string Type { get; set; }
         }
 
         [HttpPost("/book")]
@@ -38,7 +54,15 @@ namespace RavenLibrary.Controllers
             {
                 subject = b.Subject,
                 language = b.Language,
-                bookshelf = b.Bookshelf
+                bookshelf = b.Bookshelf,
+                tableOfContents = b.TableOfContents,
+                downloads = b.Downloads,
+                creator = b.Creator,
+                publisher = b.Publisher,
+                issued = b.Issued,
+                title = b.Title,
+                rights = b.Rights,
+                type = b.Type
             };
 
             await _session.StoreAsync(book);
