@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
+using Raven.Client.Documents.Operations;
 using Raven.Client.Documents.Session;
 using RavenLibrary.Models;
 using RavenLibrary.Raven.Indexes;
@@ -116,6 +117,24 @@ namespace RavenLibrary.Controllers
                 BooksPage = books.Values,
                 BooksTotal = stats.TotalResults
             };
+        }
+
+        [HttpGet("/books/random")]
+        public async Task<Book> GetRandom()
+        {
+            var cs = await _session.Advanced.DocumentStore
+                .Maintenance.SendAsync(new GetCollectionStatisticsOperation());
+
+            int totalBookCount = (int)cs.Collections["Books"];
+
+            Random r = new Random();
+            int randomBookOrdinal = r.Next(1, totalBookCount) - 1;
+
+            var randomBook = await _session.Query<Book>()
+                .Skip(randomBookOrdinal)
+                .Take(1).SingleAsync();
+
+            return randomBook;
         }
     }
 }
