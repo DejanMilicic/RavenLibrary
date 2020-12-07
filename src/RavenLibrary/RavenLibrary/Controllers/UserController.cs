@@ -29,19 +29,9 @@ namespace RavenLibrary.Controllers
         [HttpGet("/user/random")]
         public async Task<User> GetRandom()
         {
-            var cs = await _session.Advanced.DocumentStore
-                .Maintenance.SendAsync(new GetCollectionStatisticsOperation());
-
-            int totalUsersCount = (int)cs.Collections["Users"];
-
-            Random r = new Random();
-            int randomUserOrdinal = r.Next(1, totalUsersCount)-1;
-
-            var randomUser = await _session.Query<User>()
-                .Skip(randomUserOrdinal)
+            return await _session.Query<User>()
+                .Customize(x => x.RandomOrdering())
                 .Take(1).SingleAsync();
-
-            return randomUser;
         }
 
         public class CreateUserModel

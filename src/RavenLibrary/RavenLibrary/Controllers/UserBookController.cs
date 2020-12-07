@@ -56,19 +56,9 @@ namespace RavenLibrary.Controllers
         [HttpGet("/userbook/random")]
         public async Task<UserBook> GetRandom()
         {
-            var cs = await _session.Advanced.DocumentStore
-                .Maintenance.SendAsync(new GetCollectionStatisticsOperation());
-
-            int totalUserBookCount = (int)cs.Collections["UserBooks"];
-
-            Random r = new Random();
-            int randomUserBookOrdinal = r.Next(1, totalUserBookCount) - 1;
-
-            var randomBook = await _session.Query<UserBook>()
-                .Skip(randomUserBookOrdinal)
+            return await _session.Query<UserBook>()
+                .Customize(x => x.RandomOrdering())
                 .Take(1).SingleAsync();
-
-            return randomBook;
         }
     }
 }

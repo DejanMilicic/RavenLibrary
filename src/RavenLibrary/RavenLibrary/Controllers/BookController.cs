@@ -122,19 +122,9 @@ namespace RavenLibrary.Controllers
         [HttpGet("/books/random")]
         public async Task<Book> GetRandom()
         {
-            var cs = await _session.Advanced.DocumentStore
-                .Maintenance.SendAsync(new GetCollectionStatisticsOperation());
-
-            int totalBookCount = (int)cs.Collections["Books"];
-
-            Random r = new Random();
-            int randomBookOrdinal = r.Next(1, totalBookCount) - 1;
-
-            var randomBook = await _session.Query<Book>()
-                .Skip(randomBookOrdinal)
+            return await _session.Query<Book>()
+                .Customize(x => x.RandomOrdering())
                 .Take(1).SingleAsync();
-
-            return randomBook;
         }
     }
 }
