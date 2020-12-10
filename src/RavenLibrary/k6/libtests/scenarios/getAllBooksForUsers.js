@@ -19,27 +19,26 @@ export let options = {
   },
 };
 
+let users = JSON.parse(open('./users.json'));
+
 export function setup() {
   // sort users by number of books descending
   // fetch first 100.000
 
-  return { "users": [{"id":"users/164496167832"},{"id":"users/417-A"}] }
+  //return { "users": [{"id":"users/164496167832"},{"id":"users/417-A"}] }
+  return users
 }
 
 export default (data) => {
   // let randomUserRes = http.get(`${__ENV.BASE_URL}/user/random`);
-  // let randomUserId = JSON.parse(randomUserRes.body).id;
+  let randomUserId = data.users[__VU % data.users.length].id;
 
-  // let res = http.get(`${__ENV.BASE_URL}/books/user?userId=${randomUserId}`);
+  let res = http.get(`${__ENV.BASE_URL}/books/user?userId=${randomUserId}`);
 
-  // errorRate.add(res.status >= 400)
-  // check(res, {'status == 200': (r) => r.status === 200 });
+  errorRate.add(res.status >= 400)
+  check(res, {'status == 200': (r) => r.status === 200 });
 
-  //const userId = data[__VU];
-  //const userId = data[__VU];
-  
-  //console.log(__VU);
-  console.log(__VU, data.users[__VU % data.users.length].id);
+  //console.log(__VU, data.users[__VU % data.users.length].id);
 
   sleep(1);
 };
