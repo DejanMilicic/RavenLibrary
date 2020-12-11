@@ -6,11 +6,16 @@ import faker from 'https://cdnjs.cloudflare.com/ajax/libs/Faker/3.1.0/faker.min.
 let errorRate = new Rate('error_rate')
 
 export let options = {
-  vus: 1, // 1 user looping
-  duration: '5s',
+  stages: [
+    { duration: '10s', target: 500 }, // simulate ramp-up of traffic
+    { duration: '30s', target: 500 }, // stay at top limit of users
+    { duration: '10s', target: 0 },   // ramp-down to 0 users
+  ],
+
+  summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)', 'p(99.9)', 'p(99.99)'],
 
   thresholds: {
-    http_req_duration: ['p(99)<5000'], // 99% of requests must complete below 1.5s
+    http_req_duration: ['p(99)<500', 'p(99.9)<1000'],
   },
 };
 
