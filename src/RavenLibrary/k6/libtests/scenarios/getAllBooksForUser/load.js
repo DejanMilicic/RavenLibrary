@@ -18,16 +18,15 @@ export let options = {
   },
 };
 
-let users = JSON.parse(open('./users.json'));
+let users = JSON.parse(open('./data.json'));
 
 export function setup() {
   return { users: users }
 }
 
 export default (data) => {
-  let randomUserId = data.users[__VU % data.users.length].id;
-
-  let res = http.get(`${__ENV.BASE_URL}/books/user?userId=${randomUserId}`);
+  let userId = data.users[__VU % data.users.length].id;
+  let res = http.get(`${__ENV.BASE_URL}/books/user?userId=${userId}`);
 
   errorRate.add(res.status >= 400)
   check(res, {'status == 200': (r) => r.status === 200 });

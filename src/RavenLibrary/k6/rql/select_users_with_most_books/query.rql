@@ -1,0 +1,5 @@
+from UserBooks 
+group by UserId 
+order by count() desc
+select UserId as id
+limit 100000
