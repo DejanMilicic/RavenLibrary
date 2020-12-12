@@ -1,5 +1,5 @@
 from UserBooks 
 group by UserId 
 order by count() desc
-select UserId as id
+select UserId as id, count() as books
 limit 100000
