@@ -30,7 +30,7 @@ export default (data) => {
   let books = entry.books;
 
   let pageSize = 10;
-  let totalPages = Math.floor(books / pageSize);
+  let totalPages = Math.floor(books / pageSize) + 1;
 
   for (let page = 0; page < totalPages; page++) {
     let skip = page * pageSize
