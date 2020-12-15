@@ -101,6 +101,18 @@ namespace RavenLibrary.Controllers
                 .ToArrayAsync();
         }
 
+        [HttpGet("/annotations/userbook/{skip}/{take}")]
+        public async Task<IEnumerable<Annotation>> GetUserBookAnnotations(string userBookId, int skip, int take)
+        {
+            return await _session
+                .Query<Annotation, Annotations_ByUserBook>()
+                .Skip(skip)
+                .Take(take)
+                .Statistics(out QueryStatistics stats)
+                .Where(x => x.UserBookId == userBookId)
+                .ToArrayAsync();
+        }
+
         [HttpGet("/annotations/")]
         public async Task<IEnumerable<Annotation>> GetAnnotationsForUserForBook(string userId, string bookId)
         {
