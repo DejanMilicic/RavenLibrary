@@ -35,11 +35,11 @@ export default (data) => {
   for (let page = 0; page < totalPages; page++) {
     let skip = page * pageSize
     
-    //console.log(bookId, annotations, page, totalPages);
+    //console.log(userBookId, annotations, page, totalPages);
 
-    // todo : implement paged endpoint
-    //let res = http.get(`${__ENV.BASE_URL}/annotations/userbook/${skip}/${pageSize}?userId=${userId}`);
-    let res = http.get(`${__ENV.BASE_URL}/annotations/userbook?userBookId=${userBookId}`);
+    let res = http.get(`${__ENV.BASE_URL}/annotations/userbook/${skip}/${pageSize}?userBookId=${userBookId}`);
+
+    //console.log(res.body);
 
     errorRate.add(res.status >= 400)
     check(res, {'status == 200': (r) => r.status === 200 });
