@@ -67,7 +67,7 @@ namespace RavenLibrary.Controllers
                 .ToArrayAsync();
         }
 
-        public class GetUserAnnotationsRangeResponse
+        public class GetAnnotationsRangeResponse
         {
             public IEnumerable<Annotation> AnnotationsPage { get; set; }
 
@@ -75,7 +75,7 @@ namespace RavenLibrary.Controllers
         }
 
         [HttpGet("/annotations/user/{skip}/{take}")]
-        public async Task<GetUserAnnotationsRangeResponse> GetUserAnnotationsRange(string userId, int skip, int take)
+        public async Task<GetAnnotationsRangeResponse> GetUserAnnotationsRange(string userId, int skip, int take)
         {
             var userAnnotations = await _session
                 .Query<Annotation, Annotations_ByUserBook>()
@@ -85,7 +85,7 @@ namespace RavenLibrary.Controllers
                 .Where(x => x.UserBookId.StartsWith(Util.GetUserBookCollectionUserPrefix(userId)))
                 .ToArrayAsync();
 
-            return new GetUserAnnotationsRangeResponse
+            return new GetAnnotationsRangeResponse
             {
                 AnnotationsPage = userAnnotations,
                 Total = stats.TotalResults
@@ -123,7 +123,7 @@ namespace RavenLibrary.Controllers
         }
 
         [HttpGet("/annotations/{skip}/{take}")]
-        public async Task<GetUserAnnotationsRangeResponse> GetAnnotationsRangeForUserForBook(string userId, string bookId, int skip, int take)
+        public async Task<GetAnnotationsRangeResponse> GetAnnotationsRangeForUserForBook(string userId, string bookId, int skip, int take)
         {
             var userBookAnnotations = await _session
                 .Query<Annotation, Annotations_ByUserBook>()
@@ -133,7 +133,7 @@ namespace RavenLibrary.Controllers
                 .Where(x => x.UserBookId.StartsWith(Util.GetUserBookCollection(userId, bookId)))
                 .ToArrayAsync();
 
-            return new GetUserAnnotationsRangeResponse
+            return new GetAnnotationsRangeResponse
             {
                 AnnotationsPage = userBookAnnotations,
                 Total = stats.TotalResults
