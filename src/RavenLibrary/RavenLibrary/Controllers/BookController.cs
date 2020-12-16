@@ -84,7 +84,6 @@ namespace RavenLibrary.Controllers
             var userBooks = await _session
                 .Query<UserBook_ByUser_ByBook.Result, UserBook_ByUser_ByBook>()
                 .Where(x => x.UserId == userId)
-                .Include(x => x.BookId)
                 .ToArrayAsync();
 
             Dictionary<string, Book> books = await _session.LoadAsync<Book>(userBooks.Select(x => x.BookId));
