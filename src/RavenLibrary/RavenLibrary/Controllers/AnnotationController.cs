@@ -61,14 +61,11 @@ namespace RavenLibrary.Controllers
         [HttpGet("/annotations/user/")]
         public async Task<IEnumerable<Annotation>> GetUserAnnotations(string userId)
         {
-            var userAnnotations = await _session
+            return await _session
                 .Query<Annotations_ByUser.Result, Annotations_ByUser>()
                 .Where(x => x.UserId == userId)
+                .OfType<Annotation>()
                 .ToArrayAsync();
-
-            Dictionary<string, Annotation> annotations = await _session
-                .LoadAsync<Annotation>(userAnnotations.Select(x => x.AnnotationId));
-            return annotations.Values.ToList();
         }
 
         public class GetAnnotationsRangeResponse
