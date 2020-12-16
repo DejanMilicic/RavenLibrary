@@ -151,7 +151,7 @@ namespace RavenLibrary.Controllers
         public async Task<IEnumerable<Annotation>> GetUserAnnotationsAfter(string userId, DateTimeOffset after)
         {
             // todo implement
-            // we will see if this needs to be implemented
+            // will see if this needs to be implemented, or maybe not
             return new List<Annotation>();
         }
 
