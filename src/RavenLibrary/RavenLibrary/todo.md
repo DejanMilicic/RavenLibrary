@@ -5,7 +5,7 @@
 	* get books for a user, paged
 2. [Initial device Sync]
 	* get annotations for a user, all
-+ get annotations for a user, paged
+	* get annotations for a user, paged
 + get annotations for a user/book, all
 	* get annotations for a user/book, paged
 3. [Subsequent Syncs] 
