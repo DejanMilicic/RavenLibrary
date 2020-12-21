@@ -20,8 +20,8 @@ namespace RavenLibrary.Raven.Indexes
             Map = userBooks => from userBook in userBooks
                 select new
                 {
-                    UserId = userBook.UserId,
-                    BookId = userBook.BookId,
+                    UserId = userBook.user,
+                    BookId = userBook.book,
                     Count = 1
                 };
 

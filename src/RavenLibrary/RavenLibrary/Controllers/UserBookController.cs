@@ -40,10 +40,10 @@ namespace RavenLibrary.Controllers
             UserBook userBook = new UserBook
             {
                 Id = Util.GetUserBookCollection(ub.User, ub.Book),
-                UserId = ub.User,
-                BookId = ub.Book,
+                user = ub.User,
+                book = ub.Book,
                 Stars = 0,
-                Created = DateTimeOffset.UtcNow
+                At = DateTimeOffset.UtcNow
             };
 
             await _session.StoreAsync(userBook);

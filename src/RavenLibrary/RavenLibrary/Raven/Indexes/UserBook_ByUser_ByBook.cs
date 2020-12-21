@@ -18,8 +18,8 @@ namespace RavenLibrary.Raven.Indexes
             Map = ubs => ubs
                 .Select(ub => new Result
                 {
-                    UserId = ub.UserId,
-                    BookId = ub.BookId
+                    UserId = ub.user,
+                    BookId = ub.book
                 });
         }
     }
