@@ -64,8 +64,9 @@ namespace RavenLibrary.Controllers
         public async Task<IEnumerable<Annotation>> GetUserAnnotations(string userId)
         {
             return await _session
-                .Query<Annotation, Annotations_ByUser>()
-                .Where(x => x.user == userId)
+                .Query<Annotations_ByUser.Result, Annotations_ByUser>()
+                .Where(x => x.UserId == userId)
+                .OfType<Annotation>()
                 .ToArrayAsync();
         }
 
@@ -80,11 +81,12 @@ namespace RavenLibrary.Controllers
         public async Task<GetAnnotationsRangeResponse> GetUserAnnotationsRange(string userId, int skip, int take)
         {
             var userAnnotations = await _session
-                .Query<Annotation, Annotations_ByUser>()
+                .Query<Annotations_ByUser.Result, Annotations_ByUser>()
                 .Skip(skip)
                 .Take(take)
                 .Statistics(out QueryStatistics stats)
-                .Where(x => x.user == userId)
+                .Where(x => x.UserId == userId)
+                .OfType<Annotation>()
                 .ToArrayAsync();
 
             return new GetAnnotationsRangeResponse
