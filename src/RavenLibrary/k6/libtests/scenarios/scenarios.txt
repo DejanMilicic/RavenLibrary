@@ -1,0 +1,13 @@
+-getAnnotationsForUser_All
+-getBooksForUser_All
+-getBooksForUser_Paged
+(user id, count of books)
+{"id":"users/490-A","books":141}
+
+-getAnnotationsForUser_Paged
+-getAnnotationsForUserBook_All
+-getAnnotationsForUserBook_Paged
+(userbookid, count of annotations)
+{"id":"UsersBooks/users/579-A-books/165-A/0000000000000035743-A","annotations":5}
+
+
