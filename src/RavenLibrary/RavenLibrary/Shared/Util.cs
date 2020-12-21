@@ -11,7 +11,7 @@
 
         public static string GetUserBookCollectionUserPrefix(string userId)
         {
-            return $"{usersBooksCollection}/{userId}-";
+            return $"{usersBooksCollection}/{userId}";
         }
     }
 }

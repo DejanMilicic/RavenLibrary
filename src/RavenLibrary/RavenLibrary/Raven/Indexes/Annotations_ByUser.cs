@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Raven.Client.Documents.Indexes;
 using RavenLibrary.Models;
 
@@ -19,10 +18,8 @@ namespace RavenLibrary.Raven.Indexes
             Map = ans => ans
                 .Select(a => new Result
                 {
+                    UserId = a.user,
                     AnnotationId = a.Id,
-                    UserId = a.UserBookId
-                        .Replace("UsersBooks/", "") // 
-                        .Split(new string[]{ "-books", "-ebooks" }, StringSplitOptions.RemoveEmptyEntries)[0]
                 });
         }
     }

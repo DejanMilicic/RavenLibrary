@@ -33,11 +33,11 @@ namespace RavenLibrary.Test
 
             Annotation a = new Annotation
             {
-                Created = DateTimeOffset.UtcNow,
-                Note = "this is my note",
-                Start = 123,
-                Text = "this is my text about note",
-                UserBookId = "userBooks/123"
+                at = DateTimeOffset.UtcNow,
+                start = 123,
+                text = "this is my text about note",
+                user = "user/123",
+                book = "book/123"
             };
 
             session.Store(a);
