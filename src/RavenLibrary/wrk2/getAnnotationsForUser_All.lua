@@ -13,7 +13,7 @@ request = function()
 		index = 1
 	end 
 	item = users[index]
-	path = "/annotations/userbook?userBookId=" .. item.id -- todo fix this enfpoint
+	path = "/annotations/userbook?userBookId=" .. item.id
 	r[0] = wrk.format(nil, path)
 	return table.concat(r)
 end
