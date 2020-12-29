@@ -1,0 +1,14 @@
+from UserBooks 
+group by UserId 
+order by count() as long desc
+select UserId as id, count() as books
+limit 100000
+
+
+from index 'Books/ByUser' as b
+order by Count as long desc
+select {
+    id: b.UserId,
+    books: b.Count
+}
+limit 100000

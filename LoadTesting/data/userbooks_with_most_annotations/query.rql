@@ -1,0 +1,5 @@
+from Annotations  
+group by book, user  
+order by count() as long desc
+select book as id, count() as annotations
+limit 100000
