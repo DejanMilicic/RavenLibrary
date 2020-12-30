@@ -1,8 +1,8 @@
 json = require "json"
-file = io.open("annotations.json", "r")
+file = io.open("users.json", "r")
 data = file:read("*a")
-annotations = json.decode(data)
-count_of_users = table.getn(annotations)
+users = json.decode(data)
+count_of_users = table.getn(users)
 counter = math.random(count_of_users) -- Each thread has separate start position
 
 function Split(s, delimiter)
@@ -25,13 +25,11 @@ request = function()
 	if index == 0 then
 		index = 1
 	end 
-	item = annotations[index]
-	midSection = Split(item.id, '/')[3]
-	userId = "users/" .. string.sub(midSection, 0, findLast(midSection, '-')-1)
+	item = users[index]
 	local pageSize = 10
 	local reqs = 1
-	for i=1,item.annotations,pageSize do
-		path = "/annotations/user/" .. i * pageSize ..  "/" .. pageSize .. "/?userId=" .. userId
+	for i=1,item.books,pageSize do
+		path = "/annotations/user/" .. i * pageSize ..  "/" .. pageSize .. "/?userId=" .. item.id
 		r[reqs] = wrk.format(nil, path)
 		reqs = reqs + 1
 	end
