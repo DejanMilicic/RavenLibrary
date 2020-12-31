@@ -14,6 +14,6 @@ request = function()
 	end 
 	item = users[index]
 	path = "/books/user?userId=" .. item.id
-	r[0] = wrk.format(nil, path)
+	r[1] = wrk.format(nil, path)
 	return table.concat(r)
 end
