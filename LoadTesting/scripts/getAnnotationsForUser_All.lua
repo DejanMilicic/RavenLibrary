@@ -1,5 +1,5 @@
 json = require "json"
-file = io.open("data.json", "r")
+file = io.open("users.json", "r")
 data = file:read("*a")
 users = json.decode(data)
 count_of_users = table.getn(users)
@@ -13,7 +13,7 @@ request = function()
 		index = 1
 	end 
 	item = users[index]
-	path = "/annotations/userbook?userBookId=" .. item.id
-	r[0] = wrk.format(nil, path)
+	path = "/annotations/user?userId=" .. item.id
+	r[1] = wrk.format(nil, path)
 	return table.concat(r)
 end
