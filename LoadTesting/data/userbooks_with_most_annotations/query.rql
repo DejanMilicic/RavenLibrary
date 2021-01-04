@@ -3,3 +3,12 @@ group by book, user
 order by count() as long desc
 select book as id, count() as annotations
 limit 100000
+
+
+from Annotations as a
+group by book, user  
+order by count() as long desc
+select {
+    id: a.user + "-" + a.book
+}
+limit 100000
