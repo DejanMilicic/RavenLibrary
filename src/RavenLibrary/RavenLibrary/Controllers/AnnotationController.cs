@@ -16,12 +16,10 @@ namespace RavenLibrary.Controllers
     public class AnnotationController : ControllerBase
     {
         private readonly IAsyncDocumentSession _session;
-        private readonly IDocumentSession _s;
 
         public AnnotationController(IAsyncDocumentSession session, IDocumentSession s)
         {
             _session = session;
-            _s = s;
         }
 
         [HttpGet("/annotation")]
@@ -100,16 +98,14 @@ namespace RavenLibrary.Controllers
         [HttpGet("/annotations/")]
         public async IAsyncEnumerable<Annotation> GetUserBookAnnotations(string userId, string bookId)
         {
-            var query = _s
+            var query = _session
                 .Query<Annotation>()
                 .Where(x => x.Id.StartsWith($"Annotations/{userId}-{bookId}/"));
 
-            using var stream = _s.Advanced.Stream(query);
+            await using var stream = await _session.Advanced.StreamAsync(query);
 
-            while (stream.MoveNext())
-            {
+            while (await stream.MoveNextAsync())
                 yield return stream.Current.Document;
-            }
         }
 
         [HttpGet("/annotations/{skip}/{take}")]
