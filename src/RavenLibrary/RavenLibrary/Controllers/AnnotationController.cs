@@ -131,12 +131,16 @@ namespace RavenLibrary.Controllers
         }
 
         [HttpGet("/annotations/userbook/")]
-        public async Task<IEnumerable<Annotation>> GetUserBookAnnotations(string userBookId)
+        public async IAsyncEnumerable<Annotation> GetUserBookAnnotations(string userBookId)
         {
-            return await _session
+            var query = _session
                 .Query<Annotation>()
-                .Where(x => x.Id.StartsWith($"Annotations/{userBookId}/"))
-                .ToArrayAsync();
+                .Where(x => x.Id.StartsWith($"Annotations/{userBookId}/"));
+
+            await using var stream = await _session.Advanced.StreamAsync(query);
+
+            while (await stream.MoveNextAsync())
+                yield return stream.Current.Document;
         }
 
         [HttpGet("/annotations/userbook/{skip}/{take}")]
