@@ -17,7 +17,7 @@ namespace RavenLibrary.Controllers
     {
         private readonly IAsyncDocumentSession _session;
 
-        public AnnotationController(IAsyncDocumentSession session, IDocumentSession s)
+        public AnnotationController(IAsyncDocumentSession session)
         {
             _session = session;
         }
