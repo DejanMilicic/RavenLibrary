@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Operations;
+using Raven.Client.Documents.Queries;
 using Raven.Client.Documents.Session;
 using RavenLibrary.Models;
 using RavenLibrary.Raven.Indexes;
@@ -79,18 +80,21 @@ namespace RavenLibrary.Controllers
         }
 
         [HttpGet("/books/user/")]
-        public async Task<IEnumerable<Book>> GetUserBooks(string userId)
+        public async IAsyncEnumerable<Book> GetUserBooks(string userId)
         {
-            var userBooks = await _session
+            var userBooksQuery = _session
                 .Query<UserBook_ByUser_ByBook.Result, UserBook_ByUser_ByBook>()
                 .Where(x => x.UserId == userId)
-                .Include(x => x.BookId)
                 .OfType<UserBook>()
-                .ToArrayAsync();
+                .Select(x => new
+                {
+                    Book = RavenQuery.Load<Book>(x.book)
+                });
 
-            Dictionary<string, Book> books = await _session.LoadAsync<Book>(userBooks.Select(x => x.book));
+            await using var stream = await _session.Advanced.StreamAsync(userBooksQuery);
 
-            return books.Values.ToList();
+            while (await stream.MoveNextAsync())
+                yield return stream.Current.Document.Book;
         }
 
         public class GetUserBooksRangeResponse
