@@ -8,7 +8,6 @@ using Raven.Client.Documents.Linq;
 using Raven.Client.Documents.Session;
 using RavenLibrary.Models;
 using RavenLibrary.Raven.Indexes;
-using RavenLibrary.Shared;
 
 namespace RavenLibrary.Controllers
 {
@@ -17,10 +16,12 @@ namespace RavenLibrary.Controllers
     public class AnnotationController : ControllerBase
     {
         private readonly IAsyncDocumentSession _session;
+        private readonly IDocumentSession _s;
 
-        public AnnotationController(IAsyncDocumentSession session)
+        public AnnotationController(IAsyncDocumentSession session, IDocumentSession s)
         {
             _session = session;
+            _s = s;
         }
 
         [HttpGet("/annotation")]
@@ -97,14 +98,18 @@ namespace RavenLibrary.Controllers
         }
 
         [HttpGet("/annotations/")]
-        public async Task<IEnumerable<Annotation>> GetUserBookAnnotations(string userId, string bookId)
+        public async IAsyncEnumerable<Annotation> GetUserBookAnnotations(string userId, string bookId)
         {
-            // UsersBooks/users/3545990-ebooks/13194/0000000003355646640-A
-
-            return await _session
+            var query = _s
                 .Query<Annotation>()
-                .Where(x => x.Id.StartsWith($"Annotations/{userId}-{bookId}/"))
-                .ToArrayAsync();
+                .Where(x => x.Id.StartsWith($"Annotations/{userId}-{bookId}/"));
+
+            using var stream = _s.Advanced.Stream(query);
+
+            while (stream.MoveNext())
+            {
+                yield return stream.Current.Document;
+            }
         }
 
         [HttpGet("/annotations/{skip}/{take}")]
