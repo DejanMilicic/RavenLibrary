@@ -60,13 +60,17 @@ namespace RavenLibrary.Controllers
         }
 
         [HttpGet("/annotations/user/")]
-        public async Task<IEnumerable<Annotation>> GetUserAnnotations(string userId)
+        public async IAsyncEnumerable<Annotation> GetUserAnnotations(string userId)
         {
-            return await _session
+            var query = _session
                 .Query<Annotations_ByUser.Result, Annotations_ByUser>()
                 .Where(x => x.UserId == userId)
-                .OfType<Annotation>()
-                .ToArrayAsync();
+                .OfType<Annotation>();
+
+            await using var stream = await _session.Advanced.StreamAsync(query);
+
+            while (await stream.MoveNextAsync())
+                yield return stream.Current.Document;
         }
 
         public class GetAnnotationsRangeResponse
