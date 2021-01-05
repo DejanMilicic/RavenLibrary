@@ -16,7 +16,7 @@ for fname in sys.argv[1:]:
     lines = data.splitlines()
     print(fname, end =",")
     for line in lines:
-        v = line.split('   ')
+        v = line.split()
         if len(v) < 2:
             continue
         print(v[1], end =", ")
