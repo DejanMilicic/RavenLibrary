@@ -14,7 +14,7 @@ for fname in sys.argv[1:]:
 
     data = data[start:end]
     lines = data.splitlines()
-    print(fname, end =",")
+    print(fname, end =", ")
     for line in lines:
         v = line.split()
         if len(v) < 2:
