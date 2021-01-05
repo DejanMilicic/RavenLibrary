@@ -60,105 +60,73 @@ namespace RavenLibrary.Controllers
         }
 
         [HttpGet("/annotations/user/")]
-        public async IAsyncEnumerable<Annotation> GetUserAnnotations(string userId)
+        public AsyncQueryResult<Annotation> GetUserAnnotations(string userId)
         {
             var query = _session
                 .Query<Annotations_ByUser.Result, Annotations_ByUser>()
                 .Where(x => x.UserId == userId)
                 .OfType<Annotation>();
 
-            await using var stream = await _session.Advanced.StreamAsync(query);
-
-            while (await stream.MoveNextAsync())
-                yield return stream.Current.Document;
-        }
-
-        public class GetAnnotationsRangeResponse
-        {
-            public IEnumerable<Annotation> AnnotationsPage { get; set; }
-
-            public int Total { get; set; }
+            return new AsyncQueryResult<Annotation>(_session, query);
         }
 
         [HttpGet("/annotations/user/{skip}/{take}")]
-        public async Task<GetAnnotationsRangeResponse> GetUserAnnotationsRange(string userId, int skip, int take)
+        public AsyncQueryResult<Annotation> GetUserAnnotationsRange(string userId, int skip, int take)
         {
-            var userAnnotations = await _session
+            var userAnnotations = _session
                 .Query<Annotations_ByUser.Result, Annotations_ByUser>()
                 .Skip(skip)
                 .Take(take)
                 .Statistics(out QueryStatistics stats)
                 .Where(x => x.UserId == userId)
-                .OfType<Annotation>()
-                .ToArrayAsync();
-
-            return new GetAnnotationsRangeResponse
-            {
-                AnnotationsPage = userAnnotations,
-                Total = stats.TotalResults
-            };
+                .OfType<Annotation>();
+            
+            return new AsyncQueryResult<Annotation>(_session, userAnnotations);
         }
 
         [HttpGet("/annotations/")]
-        public async IAsyncEnumerable<Annotation> GetUserBookAnnotations(string userId, string bookId)
+        public AsyncQueryResult<Annotation> GetUserBookAnnotations(string userId, string bookId)
         {
             var query = _session
                 .Query<Annotation>()
                 .Where(x => x.Id.StartsWith($"Annotations/{userId}-{bookId}/"));
 
-            await using var stream = await _session.Advanced.StreamAsync(query);
-
-            while (await stream.MoveNextAsync())
-                yield return stream.Current.Document;
+            return new AsyncQueryResult<Annotation>(_session, query);
         }
 
         [HttpGet("/annotations/{skip}/{take}")]
-        public async Task<GetAnnotationsRangeResponse> GetUserBookAnnotations(string userId, string bookId, int skip, int take)
+        public AsyncQueryResult<Annotation>  GetUserBookAnnotations(string userId, string bookId, int skip, int take)
         {
-            var userBookAnnotations = await _session
+            var userBookAnnotations =  _session
                 .Query<Annotation>()
                 .Skip(skip)
                 .Take(take)
-                .Statistics(out QueryStatistics stats)
-                .Where(x => x.Id.StartsWith($"Annotations/{userId}-{bookId}/"))
-                .ToArrayAsync();
+                .Where(x => x.Id.StartsWith($"Annotations/{userId}-{bookId}/"));
 
-            return new GetAnnotationsRangeResponse
-            {
-                AnnotationsPage = userBookAnnotations,
-                Total = stats.TotalResults
-            };
+            return new AsyncQueryResult<Annotation>(_session, userBookAnnotations);
         }
 
+        
         [HttpGet("/annotations/userbook/")]
-        public async IAsyncEnumerable<Annotation> GetUserBookAnnotations(string userBookId)
+        public AsyncQueryResult<Annotation> GetUserBookAnnotations(string userBookId)
         {
             var query = _session
                 .Query<Annotation>()
                 .Where(x => x.Id.StartsWith($"Annotations/{userBookId}/"));
 
-            await using var stream = await _session.Advanced.StreamAsync(query);
-
-            while (await stream.MoveNextAsync())
-                yield return stream.Current.Document;
+            return new AsyncQueryResult<Annotation>(_session, query);
         }
 
         [HttpGet("/annotations/userbook/{skip}/{take}")]
-        public async Task<GetAnnotationsRangeResponse> GetUserBookAnnotations(string userBookId, int skip, int take)
+        public AsyncQueryResult<Annotation> GetUserBookAnnotations(string userBookId, int skip, int take)
         {
-            var userBookAnnotations = await _session
+            var userBookAnnotations = _session
                 .Query<Annotation>()
                 .Skip(skip)
                 .Take(take)
-                .Statistics(out QueryStatistics stats)
-                .Where(x => x.Id.StartsWith($"Annotations/{userBookId}/"))
-                .ToArrayAsync();
-
-            return new GetAnnotationsRangeResponse
-            {
-                AnnotationsPage = userBookAnnotations,
-                Total = stats.TotalResults
-            };
+                .Where(x => x.Id.StartsWith($"Annotations/{userBookId}/"));
+            
+            return new AsyncQueryResult<Annotation>(_session, userBookAnnotations);
         }
 
         [HttpGet("/annotations/user/after/")]
