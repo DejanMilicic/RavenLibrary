@@ -80,21 +80,18 @@ namespace RavenLibrary.Controllers
         }
 
         [HttpGet("/books/user/")]
-        public async IAsyncEnumerable<Book> GetUserBooks(string userId)
+        public AsyncQueryResult<Book> GetUserBooks(string userId)
         {
             var userBooksQuery = _session
                 .Query<UserBook_ByUser_ByBook.Result, UserBook_ByUser_ByBook>()
                 .Where(x => x.UserId == userId)
                 .OfType<UserBook>()
-                .Select(x => new
-                {
-                    Book = RavenQuery.Load<Book>(x.book)
-                });
+                .Select(x =>
+                
+                    RavenQuery.Load<Book>(x.book)
+                );
 
-            await using var stream = await _session.Advanced.StreamAsync(userBooksQuery);
-
-            while (await stream.MoveNextAsync())
-                yield return stream.Current.Document.Book;
+            return new AsyncQueryResult<Book>(_session, userBooksQuery);
         }
 
         public class GetUserBooksRangeResponse
