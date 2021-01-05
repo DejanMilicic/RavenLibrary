@@ -1,12 +1,11 @@
 ```
 getAnnotationsForUser_All
 http://18.194.13.34:5000/annotations/user?userId=users/2407963
-result: 
-InvalidOperationException: 'AsyncEnumerableReader' reached the configured maximum size of the buffer when enumerating a value of type 'RavenLibrary.Controllers.AnnotationController+<GetUserAnnotations>d__5'. This limit is in place to prevent infinite streams of 'IAsyncEnumerable<>' from continuing indefinitely. If this is not a programming mistake, consider ways to reduce the collection size, or consider manually converting 'RavenLibrary.Controllers.AnnotationController+<GetUserAnnotations>d__5' into a list rather than increasing the limit.
+result size: 62MB 
 
 getAnnotationsForUser_Paged
 http://18.194.13.34:5000/annotations/user/0/10/?userId=users/2407963
-result: 3.9kB
+result size: 3.9kB
 
 getAnnotationsForUserBook_All
 http://18.194.13.34:5000/annotations/userbook?userBookId=users/2407963-ebooks/46133
