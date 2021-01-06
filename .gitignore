@@ -41,3 +41,5 @@ devops/
 .ionide/
 
 src/RavenLibrary/RavenLibrary.LoadTests/logs/
+
+src/RavenLibrary/RavenLibrary.LoadTests/reports/
