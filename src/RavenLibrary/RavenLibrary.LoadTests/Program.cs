@@ -35,10 +35,12 @@ namespace RavenLibrary.LoadTests
             };
 
             foreach(var item in items){
-                NBomberRunner
+                var stats = NBomberRunner
                     .RegisterScenarios(item)
                     .WithWorkerPlugins(pingPlugin)
                     .Run();
+
+                //Console.WriteLine("90.0% : " + stats.ScenarioStats[0].StepStats[0].Percent90);
             }
         }
 
