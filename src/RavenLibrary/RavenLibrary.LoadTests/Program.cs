@@ -1,6 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
+using FsToolkit.ErrorHandling;
+using NBomber;
 using NBomber.Contracts;
 using NBomber.CSharp;
 using NBomber.Plugins.Http.CSharp;
@@ -25,34 +30,53 @@ namespace RavenLibrary.LoadTests
 
         public static Scenario GetAnnotationsByUser_Paged()
         {
-            string url = $"http://18.193.149.237:5000/annotations/user/0/10?userId=";
-            var random = new Random(2323);
-            var users = JArray.Load(new JsonTextReader(File.OpenText("users.json")));
-            
-            var step = HttpStep.Create("get", context =>
-                Http.CreateRequest("GET", url + users[random.Next(users.Count)].Value<string>("id"))
+            //string url = $"http://18.193.149.237:5000/annotations/user/0/10?userId=";
+            //var random = new Random(2323);
+            //var users = JArray.Load(new JsonTextReader(File.OpenText("users.json")));
+
+            var data = FeedData.FromJson<Tag>("tags.json");
+            var tagFeed = Feed.CreateCircular("tagFeed", provider: data);
+
+            var step = HttpStep.Create("step", tagFeed, context =>
+            {
+                //var userId = context.FeedItem;
+                //var url = $"https://jsonplaceholder.typicode.com/users?id={userId}";
+
+                string url = "http://localhost:52788/" + context.FeedItem.tag;
+
+                return Http.CreateRequest("GET", url)
                     .WithCheck(async response =>
-                    {
-                        var rc = await response.Content.ReadAsStringAsync();
+                        response.IsSuccessStatusCode
+                            ? Response.Ok()
+                            : Response.Fail()
+                    );
+            });
 
-                        if (response.StatusCode != HttpStatusCode.OK)
-                        {
-                            context.Logger.Information(rc);
-                            return Response.Fail();
-                        }
-
-                        return Response.Ok();
-                    })
-            );
 
             var scenario = ScenarioBuilder
                 .CreateScenario("GetAnnotationsByUser_Paged", step)
+                .WithoutWarmUp()
                 .WithLoadSimulations(new[]
                 {
-                    Simulation.InjectPerSec(rate: 100, during: TimeSpan.FromSeconds(30))
+                    Simulation
+                        .KeepConstant(10_000, during: TimeSpan.FromSeconds(20))
+                        //.InjectPerSec(rate: 20000, during: TimeSpan.FromSeconds(10))
                 });
 
             return scenario;
+        }
+
+        public class User
+        {
+            public string id { get; set; }
+
+            public string books { get; set; }
+        }
+
+        public class Tag
+        {
+
+            public string tag { get; set; }
         }
     }
 }
