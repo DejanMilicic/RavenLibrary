@@ -39,3 +39,5 @@ msbuild.wrn
 devops/
 
 .ionide/
+
+src/RavenLibrary/RavenLibrary.LoadTests/logs/

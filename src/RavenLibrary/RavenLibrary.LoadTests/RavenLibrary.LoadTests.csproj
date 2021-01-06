@@ -12,4 +12,10 @@
     <PackageReference Include="NBomber.Http" Version="1.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="users.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using NBomber.Contracts;
 using NBomber.CSharp;
 using NBomber.Plugins.Http.CSharp;
 using NBomber.Plugins.Network.Ping;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace RavenLibrary.LoadTests
 {
@@ -22,18 +25,23 @@ namespace RavenLibrary.LoadTests
 
         public static Scenario GetAnnotationsByUser_Paged()
         {
-            string user = "users%2F5101859";
-            string url = $"http://18.193.149.237:5000/annotations/user/0/10?userId={user}";
-
+            string url = $"http://18.193.149.237:5000/annotations/user/0/10?userId=";
+            var random = new Random(2323);
+            var users = JArray.Load(new JsonTextReader(File.OpenText("users.json")));
+            
             var step = HttpStep.Create("get", context =>
-                Http.CreateRequest("GET", url)
+                Http.CreateRequest("GET", url + users[random.Next(users.Count)].Value<string>("id"))
                     .WithCheck(async response =>
                     {
                         var rc = await response.Content.ReadAsStringAsync();
 
-                        return response.StatusCode == HttpStatusCode.OK
-                            ? Response.Ok()
-                            : Response.Fail();
+                        if (response.StatusCode != HttpStatusCode.OK)
+                        {
+                            context.Logger.Information(rc);
+                            return Response.Fail();
+                        }
+
+                        return Response.Ok();
                     })
             );
 
