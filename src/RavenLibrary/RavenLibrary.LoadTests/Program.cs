@@ -17,60 +17,93 @@ namespace RavenLibrary.LoadTests
 {
     class Program
     {
+        static TimeSpan Duration = TimeSpan.FromSeconds(30);
+        static int Rate = 250;
+
         static void Main(string[] args)
         {
             var pingPluginConfig = PingPluginConfig.CreateDefault(new[] { "RavenCms" });
             var pingPlugin = new PingPlugin(pingPluginConfig);
 
-            NBomberRunner
-                .RegisterScenarios(GetAnnotationsByUser_Paged())
-                .WithWorkerPlugins(pingPlugin)
-                .Run();
+            string host = "http://18.193.149.237:5000";
+            var users = FeedData.FromJson<User>("users.json");
+            var annotations = FeedData.FromJson<Annotation>("annotations.json");
+            
+            var items = new[]{
+                    Url("GetAnnotationsByUserBook_Paged", annotations, $"{host}/annotations/userbook/0/10?userBookId="), 
+                    Url("GetAnnotationsByUser_Paged", users, $"{host}/annotations/user/0/10?userId=")
+            };
+
+            foreach(var item in items){
+                NBomberRunner
+                    .RegisterScenarios(item)
+                    .WithWorkerPlugins(pingPlugin)
+                    .Run();
+            }
         }
 
-        public static Scenario GetAnnotationsByUser_Paged()
+        public static Scenario Url<T>(string name, IFeedProvider<T> data, string url)
+            where T : IHasId
         {
-            //string url = $"http://18.193.149.237:5000/annotations/user/0/10?userId=";
-            //var random = new Random(2323);
-            //var users = JArray.Load(new JsonTextReader(File.OpenText("users.json")));
+            // var random = new Random(2323);
+            // var users = JArray.Load(new JsonTextReader(File.OpenText("users.json")));
 
-            var data = FeedData.FromJson<Tag>("tags.json");
-            var tagFeed = Feed.CreateCircular("tagFeed", provider: data);
+            var tagFeed = Feed.CreateRandom("tagFeed", provider: data);
 
             var step = HttpStep.Create("step", tagFeed, context =>
             {
                 //var userId = context.FeedItem;
                 //var url = $"https://jsonplaceholder.typicode.com/users?id={userId}";
 
-                string url = "http://localhost:52788/" + context.FeedItem.tag;
+                string url2 = url + context.FeedItem.GetItemId();
 
-                return Http.CreateRequest("GET", url)
-                    .WithCheck(async response =>
-                        response.IsSuccessStatusCode
+                bool reported = false;
+                return Http.CreateRequest("GET", url2)
+                    .WithCheck(async response =>{
+                        if(response.IsSuccessStatusCode == false && reported){
+                            reported=true;
+                            Console.WriteLine(response.Content.ReadAsStringAsync().Result);
+                        }
+                        return response.IsSuccessStatusCode
                             ? Response.Ok()
-                            : Response.Fail()
+                            : Response.Fail();
+                    }
                     );
             });
 
 
             var scenario = ScenarioBuilder
-                .CreateScenario("GetAnnotationsByUser_Paged", step)
+                .CreateScenario(name, step)
                 .WithoutWarmUp()
                 .WithLoadSimulations(new[]
                 {
                     Simulation
-                        .KeepConstant(10_000, during: TimeSpan.FromSeconds(20))
+                        .InjectPerSec(Rate, during: Duration)
                         //.InjectPerSec(rate: 20000, during: TimeSpan.FromSeconds(10))
                 });
 
             return scenario;
         }
 
-        public class User
+        public interface IHasId
         {
+            string GetItemId();
+        }
+
+        public class User : IHasId
+        {
+            public string GetItemId() => id;
+            
             public string id { get; set; }
 
             public string books { get; set; }
+        }
+
+        public class Annotation : IHasId
+        {
+            public string GetItemId() => id;
+            
+            public string id { get; set; }
         }
 
         public class Tag
