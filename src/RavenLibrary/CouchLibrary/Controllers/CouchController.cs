@@ -17,7 +17,7 @@ namespace CouchLibrary.Controllers
         [HttpPost]
         public async Task<string> Create()
         {
-            var cluster = await Cluster.ConnectAsync("couchbase://localhost", "user", "password");
+            var cluster = await Cluster.ConnectAsync("couchbase://localhost", "admin", "password");
 
             // get a bucket reference
             var bucket = await cluster.BucketAsync("Library");
