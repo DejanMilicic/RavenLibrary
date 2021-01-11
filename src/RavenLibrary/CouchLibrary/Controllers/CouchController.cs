@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Couchbase;
 
@@ -25,11 +26,13 @@ namespace CouchLibrary.Controllers
             // get a collection reference
             var collection = bucket.DefaultCollection();
 
-            // Upsert Document
-            var upsertResult = await collection.UpsertAsync("my-document-key", new { Name = "Ted", Age = 31 });
-            var getResult = await collection.GetAsync("my-document-key");
+            string id = Guid.NewGuid().ToString();
 
-            return getResult.ContentAs<dynamic>();
+            // Upsert Document
+            var upsertResult = await collection.UpsertAsync(id, new { Name = "Ted", Age = 31 });
+            var getResult = await collection.GetAsync(id);
+
+            return getResult.ContentAs<string>();
         }
     }
 }
