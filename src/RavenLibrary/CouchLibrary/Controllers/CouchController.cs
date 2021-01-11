@@ -9,10 +9,20 @@ namespace CouchLibrary.Controllers
     [Route("[controller]")]
     public class CouchController : ControllerBase
     {
-        [HttpGet]
-        public string Get()
+        [HttpGet("/get/")]
+        public async Task<object> Get(string id)
         {
-            return "cOuch!";
+            var cluster = await Cluster.ConnectAsync("couchbase://localhost", "admin", "password");
+
+            // get a bucket reference
+            var bucket = await cluster.BucketAsync("Library");
+
+            // get a collection reference
+            var collection = bucket.DefaultCollection();
+
+            var getResult = await collection.GetAsync(id);
+
+            return getResult.ContentAs<string>();
         }
 
         [HttpPost]
