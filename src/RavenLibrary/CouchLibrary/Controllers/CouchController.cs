@@ -10,7 +10,7 @@ namespace CouchLibrary.Controllers
     public class CouchController : ControllerBase
     {
         [HttpGet("/get/")]
-        public async Task<object> Get(string id)
+        public async Task<Employee> Get(string id)
         {
             var cluster = await Cluster.ConnectAsync("couchbase://localhost", "admin", "password");
 
@@ -20,9 +20,11 @@ namespace CouchLibrary.Controllers
             // get a collection reference
             var collection = bucket.DefaultCollection();
 
-            var getResult = await collection.GetAsync(id);
+            var res = await collection.GetAsync(id);
 
-            return getResult.ContentAs<string>();
+            Employee emp = res.ContentAs<Employee>();
+
+            return emp;
         }
 
         [HttpPost]
@@ -39,10 +41,17 @@ namespace CouchLibrary.Controllers
             string id = Guid.NewGuid().ToString();
 
             // Upsert Document
-            var upsertResult = await collection.UpsertAsync(id, new { Name = "Ted", Age = 31 });
+            var upsertResult = await collection.UpsertAsync(id, new Employee { Name = "Ted", Age = 31 });
             var getResult = await collection.GetAsync(id);
 
-            return getResult.ContentAs<string>();
+            return id;
         }
+    }
+
+    public class Employee 
+    {
+        public string Name { get; set; }
+
+        public int Age { get; set; }
     }
 }
