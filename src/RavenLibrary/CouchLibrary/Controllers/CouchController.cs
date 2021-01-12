@@ -1,7 +1,8 @@
-﻿using System;
+using System;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using Couchbase;
+using Couchbase.Linq;
+using CouchLibrary.Models;
 
 namespace CouchLibrary.Controllers
 {
@@ -9,49 +10,27 @@ namespace CouchLibrary.Controllers
     [Route("[controller]")]
     public class CouchController : ControllerBase
     {
-        [HttpGet("/get/")]
-        public async Task<Employee> Get(string id)
+        private readonly BucketContext _bc;
+
+        public CouchController(BucketContext bc)
         {
-            var cluster = await Cluster.ConnectAsync("couchbase://localhost", "admin", "password");
+            _bc = bc;
+        }
 
-            // get a bucket reference
-            var bucket = await cluster.BucketAsync("Library");
-
-            // get a collection reference
-            var collection = bucket.DefaultCollection();
-
-            var res = await collection.GetAsync(id);
-
-            Employee emp = res.ContentAs<Employee>();
-
-            return emp;
+        [HttpGet("/get/")]
+        public Employee Get(string id)
+        {
+            return _bc.Query<Employee>().FirstOrDefault(x => x.Id == id);
         }
 
         [HttpPost]
-        public async Task<string> Create()
+        public string Create()
         {
-            var cluster = await Cluster.ConnectAsync("couchbase://localhost", "admin", "password");
+            var employee = new Employee { Id = Guid.NewGuid().ToString(), Name = "Ted", Age = 33 };
+            
+            _bc.Save(employee);
 
-            // get a bucket reference
-            var bucket = await cluster.BucketAsync("Library");
-
-            // get a collection reference
-            var collection = bucket.DefaultCollection();
-
-            string id = Guid.NewGuid().ToString();
-
-            // Upsert Document
-            var upsertResult = await collection.UpsertAsync(id, new Employee { Name = "Ted", Age = 31 });
-            var getResult = await collection.GetAsync(id);
-
-            return id;
+            return employee.Id;
         }
-    }
-
-    public class Employee 
-    {
-        public string Name { get; set; }
-
-        public int Age { get; set; }
     }
 }
