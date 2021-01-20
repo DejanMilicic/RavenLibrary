@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,15 @@ namespace CouchLibrary.Controllers
         public Annotation Get(string id)
         {
             return _bc.Query<Annotation>().FirstOrDefault(x => x.Id == id);
+        }
+
+        // Annotations/users/5101859-ebooks/10213/0000000002181037070-A
+        [HttpGet("/annotations/user/")]
+        public List<Annotation> GetUserAnnotations(string userId)
+        {
+            return _bc.Query<Annotation>()
+                .Where(x => x.Id.StartsWith($"Annotations/{userId}"))
+                .ToList();
         }
 
         //[HttpGet("/get/")]
