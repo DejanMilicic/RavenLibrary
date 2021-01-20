@@ -8,11 +8,11 @@ namespace CouchLibrary.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class CouchController : ControllerBase
+    public class CouchAnnotationController : ControllerBase
     {
         private readonly BucketContext _bc;
 
-        public CouchController(BucketContext bc)
+        public CouchAnnotationController(BucketContext bc)
         {
             _bc = bc;
         }
