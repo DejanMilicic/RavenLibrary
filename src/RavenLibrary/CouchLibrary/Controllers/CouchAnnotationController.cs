@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Couchbase.Linq;
 using CouchLibrary.Models;
+using RavenLibrary.Models;
 
 namespace CouchLibrary.Controllers
 {
@@ -17,6 +19,12 @@ namespace CouchLibrary.Controllers
             _bc = bc;
         }
 
+        [HttpGet("/annotation")]
+        public Annotation Get(string id)
+        {
+            return _bc.Query<Annotation>().FirstOrDefault(x => x.Id == id);
+        }
+
         //[HttpGet("/get/")]
         //public Employee Get(string id)
         //{
@@ -27,7 +35,7 @@ namespace CouchLibrary.Controllers
         //public string Create()
         //{
         //    var employee = new Employee { Id = Guid.NewGuid().ToString(), Name = "Ted", Age = 33 };
-            
+
         //    _bc.Save(employee);
 
         //    return employee.Id;
