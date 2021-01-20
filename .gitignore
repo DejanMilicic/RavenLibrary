@@ -43,3 +43,5 @@ devops/
 src/RavenLibrary/RavenLibrary.LoadTests/logs/
 
 src/RavenLibrary/RavenLibrary.LoadTests/reports/
+
+src/RavenLibrary/CouchLibrary/secret.md
