@@ -6,13 +6,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Couchbase;
 
 namespace CouchLibrary
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
+            var cluster = await Cluster.ConnectAsync("http://localhost", "Administrator", "Library");
+            Startup.TheBucket = await cluster.BucketAsync("Library");
             CreateHostBuilder(args).Build().Run();
         }
 

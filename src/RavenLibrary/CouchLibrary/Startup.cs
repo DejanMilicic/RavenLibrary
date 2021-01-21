@@ -1,3 +1,4 @@
+using Couchbase;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using Microsoft.OpenApi.Models;
 using Couchbase.Extensions.DependencyInjection;
 using Couchbase.Linq;
 using CouchLibrary.Infrastructure;
+using DnsClient.Protocol;
 
 namespace CouchLibrary
 {
@@ -17,18 +19,25 @@ namespace CouchLibrary
             Configuration = configuration;
         }
 
+        public static IBucket TheBucket;
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCouchbase(Configuration.GetSection("Couchbase"))
-                    .AddCouchbaseBucket<ILibBucketProvider>("Library")
-                    .AddTransient(x =>
-                    {
-                        var libBucket = x.GetRequiredService<ILibBucketProvider>();
-                        return new BucketContext(libBucket.GetBucket());
-                    });
+        //    var c = Configuration.GetSection("Couchbase");
+        //    var cluster = Cluster.ConnectAsync(c["Servers"], c["Username"], c["Password"]).Result;
+
+        //    services.AddSingleton(cluster.BucketAsync("Library").Result);
+        services.AddSingleton(TheBucket);
+            //services.AddCouchbase(Configuration.GetSection("Couchbase"))
+            //        .AddCouchbaseBucket<ILibBucketProvider>("Library")
+            //        //.AddTransient(x =>
+            //        //{
+            //        //    var libBucket = x.GetRequiredService<ILibBucketProvider>();
+            //        //    return new BucketContext(libBucket.GetBucket());
+            //        //})
+            //        ;
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

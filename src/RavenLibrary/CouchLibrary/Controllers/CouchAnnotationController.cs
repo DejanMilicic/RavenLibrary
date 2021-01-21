@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Couchbase;
 using Couchbase.Core;
 using Couchbase.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc;
@@ -15,35 +16,36 @@ namespace CouchLibrary.Controllers
     [Route("[controller]")]
     public class CouchAnnotationController : ControllerBase
     {
-        private readonly BucketContext _bc;
-
         private readonly IBucket _bucket;
 
-        public CouchAnnotationController(BucketContext bc, IBucketProvider bucketProvider)
+
+
+        public CouchAnnotationController(IBucket bucket)
         {
-            _bc = bc;
-            _bucket = bucketProvider.GetBucket("Library");
+            _bucket = bucket;
+
         }
 
         [HttpGet("/annotation")]
-        public string Get()
+        public async Task<string> Get()
         {
+
             //_bucket.coll
-            var ann = _bucket
-                .Exists("Annotations/users/5101859-ebooks/10213/0000000002181037070-A");
+            var ann = await _bucket.Collection("Annotations")
+                .ExistsAsync("Annotations/users/5101859-ebooks/56717/0000000002180997833-A");
             //var annotation = _bc.Query<Annotation>().FirstOrDefault(x => x.Id == id);
-            return ann.ToString();
+            return ann.Exists.ToString();
         }
 
         // Annotations/users/5101859-ebooks/10213/0000000002181037070-A
         // Annotations/users/5101859-ebooks/10213/0000000002181037070-A
-        [HttpGet("/annotations/user/")]
-        public List<Annotation> GetUserAnnotations(string userId)
-        {
-            return _bc.Query<Annotation>()
-                .Where(x => x.Id.StartsWith($"Annotations/{userId}"))
-                .ToList();
-        }
+        //[HttpGet("/annotations/user/")]
+        //public List<Annotation> GetUserAnnotations(string userId)
+        //{
+        //    return _bc.Query<Annotation>()
+        //        .Where(x => x.Id.StartsWith($"Annotations/{userId}"))
+        //        .ToList();
+        //}
 
         //[HttpGet("/get/")]
         //public Employee Get(string id)
