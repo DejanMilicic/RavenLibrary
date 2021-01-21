@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Couchbase.Core;
+using Couchbase.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc;
 using Couchbase.Linq;
 using CouchLibrary.Models;
@@ -15,17 +17,25 @@ namespace CouchLibrary.Controllers
     {
         private readonly BucketContext _bc;
 
-        public CouchAnnotationController(BucketContext bc)
+        private readonly IBucket _bucket;
+
+        public CouchAnnotationController(BucketContext bc, IBucketProvider bucketProvider)
         {
             _bc = bc;
+            _bucket = bucketProvider.GetBucket("Library");
         }
 
         [HttpGet("/annotation")]
-        public Annotation Get(string id)
+        public string Get()
         {
-            return _bc.Query<Annotation>().FirstOrDefault(x => x.Id == id);
+            //_bucket.coll
+            var ann = _bucket
+                .Exists("Annotations/users/5101859-ebooks/10213/0000000002181037070-A");
+            //var annotation = _bc.Query<Annotation>().FirstOrDefault(x => x.Id == id);
+            return ann.ToString();
         }
 
+        // Annotations/users/5101859-ebooks/10213/0000000002181037070-A
         // Annotations/users/5101859-ebooks/10213/0000000002181037070-A
         [HttpGet("/annotations/user/")]
         public List<Annotation> GetUserAnnotations(string userId)
