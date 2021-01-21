@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace RavenLibrary.Models
 {
     public class Annotation
     {
+        [Key]
         public string Id { get; set; }
 
         public string user { get; set; }
