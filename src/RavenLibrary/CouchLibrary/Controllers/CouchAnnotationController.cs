@@ -26,8 +26,8 @@ namespace CouchLibrary.Controllers
 
         }
 
-        [HttpGet("/annotation")]
-        public async Task<string> Get()
+        [HttpGet("/smoketest")]
+        public async Task<string> SmokeTest()
         {
 
             //_bucket.coll
@@ -36,6 +36,17 @@ namespace CouchLibrary.Controllers
             //var annotation = _bc.Query<Annotation>().FirstOrDefault(x => x.Id == id);
             return ann.Exists.ToString();
         }
+
+        [HttpGet("/annotation")]
+        public async Task<Annotation> Get(string id)
+        {
+            var coll = _bucket.Collection("Annotations");
+            var ann = coll.GetAsync(id).Result.ContentAs<Annotation>();
+            //var annotation = _bc.Query<Annotation>().FirstOrDefault(x => x.Id == id);
+            return ann;
+        }
+
+
 
         // Annotations/users/5101859-ebooks/10213/0000000002181037070-A
         // Annotations/users/5101859-ebooks/10213/0000000002181037070-A
