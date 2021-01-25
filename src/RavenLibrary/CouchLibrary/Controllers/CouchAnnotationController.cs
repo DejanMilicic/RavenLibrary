@@ -50,8 +50,9 @@ namespace CouchLibrary.Controllers
         [HttpGet("/annotations/user/")]
         public async Task<dynamic> GetUserAnnotations(string userId)
         {
-            var res = await Startup.Cluster
-                .QueryAsync<Annotation>("SELECT RAW a FROM Library._default.Annotations a where a.`user` = 'users/5101859'");
+            string query = $"SELECT RAW a FROM Library._default.Annotations a where a.`user` = '{userId}'";
+
+            var res = await Startup.Cluster.QueryAsync<Annotation>(query);
 
             return await res.Rows.ToListAsync();
         }
