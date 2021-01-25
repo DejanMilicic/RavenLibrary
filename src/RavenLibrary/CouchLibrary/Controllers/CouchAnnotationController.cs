@@ -45,8 +45,7 @@ namespace CouchLibrary.Controllers
             return (await coll.GetAsync(id)).ContentAs<Annotation>();
         }
 
-        // Annotations/users/5101859-ebooks/56717/0000000002180997833-A
-        // Annotations/users/5101859-ebooks/56717/0000000002180997834-A
+
         [HttpGet("/annotations/user/")]
         public async Task<dynamic> GetUserAnnotations(string userId)
         {
