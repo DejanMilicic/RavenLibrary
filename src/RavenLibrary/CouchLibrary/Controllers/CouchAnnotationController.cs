@@ -19,22 +19,16 @@ namespace CouchLibrary.Controllers
     {
         private readonly IBucket _bucket;
 
-
-
         public CouchAnnotationController(IBucket bucket)
         {
             _bucket = bucket;
-
         }
 
         [HttpGet("/smoketest")]
         public async Task<string> SmokeTest()
         {
-
-            //_bucket.coll
             var ann = await _bucket.Collection("Annotations")
                 .ExistsAsync("Annotations/users/5101859-ebooks/56717/0000000002180997833-A");
-            //var annotation = _bc.Query<Annotation>().FirstOrDefault(x => x.Id == id);
             return ann.Exists.ToString();
         }
 
