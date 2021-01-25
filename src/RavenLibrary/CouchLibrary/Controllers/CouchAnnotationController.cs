@@ -47,7 +47,7 @@ namespace CouchLibrary.Controllers
 
 
         [HttpGet("/annotations/user/")]
-        public async Task<dynamic> GetUserAnnotations(string userId)
+        public async Task<List<Annotation>> GetUserAnnotations(string userId)
         {
             string query = $"SELECT RAW a FROM Library._default.Annotations a where a.`user` = '{userId}'";
 
