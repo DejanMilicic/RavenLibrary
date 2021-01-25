@@ -59,6 +59,16 @@ namespace CouchLibrary.Controllers
             return await res.Rows.ToListAsync();
         }
 
+        [HttpGet("/annotations/userbook/")]
+        public async Task<List<Annotation>> GetUserBookAnnotations(string userBookId)
+        {
+            string query = $"SELECT RAW a FROM Library._default.Annotations a where META().id LIKE 'Annotations/{userBookId}/%'";
+
+            var res = await Startup.Cluster.QueryAsync<Annotation>(query);
+
+            return await res.Rows.ToListAsync();
+        }
+
         //[HttpGet("/get/")]
         //public Employee Get(string id)
         //{
