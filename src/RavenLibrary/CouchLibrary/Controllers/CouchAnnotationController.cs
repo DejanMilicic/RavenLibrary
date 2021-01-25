@@ -69,20 +69,14 @@ namespace CouchLibrary.Controllers
             return await res.Rows.ToListAsync();
         }
 
-        //[HttpGet("/get/")]
-        //public Employee Get(string id)
-        //{
-        //    return _bc.Query<Employee>().FirstOrDefault(x => x.Id == id);
-        //}
+        [HttpGet("/annotations/userbook/{skip}/{take}")]
+        public async Task<List<Annotation>> GetUserBookAnnotations(string userBookId, int skip, int take)
+        {
+            string query = $"SELECT RAW a FROM Library._default.Annotations a where META().id LIKE 'Annotations/{userBookId}/%' offset {skip} limit {take}";
 
-        //[HttpPost]
-        //public string Create()
-        //{
-        //    var employee = new Employee { Id = Guid.NewGuid().ToString(), Name = "Ted", Age = 33 };
+            var res = await Startup.Cluster.QueryAsync<Annotation>(query);
 
-        //    _bc.Save(employee);
-
-        //    return employee.Id;
-        //}
+            return await res.Rows.ToListAsync();
+        }
     }
 }
