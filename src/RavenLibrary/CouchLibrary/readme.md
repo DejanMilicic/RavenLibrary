@@ -24,6 +24,8 @@ SELECT * FROM Library._default.Annotations where `user` = 'users/5101859'
 
 SELECT RAW a FROM Library._default.Annotations a where a.`user` = 'users/5101859'
 
+SELECT RAW a FROM Library._default.Annotations a where a.`user` = 'users/5101859' offset 1 limit 1
+
 # Resources
 
 https://docs.couchbase.com/dotnet-sdk/current/hello-world/overview.html

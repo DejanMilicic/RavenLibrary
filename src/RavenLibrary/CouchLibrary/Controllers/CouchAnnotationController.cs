@@ -58,7 +58,7 @@ namespace CouchLibrary.Controllers
         [HttpGet("/annotations/user/{skip}/{take}")]
         public async Task<List<Annotation>> GetUserAnnotationsRange(string userId, int skip, int take)
         {
-            string query = $"SELECT RAW a FROM Library._default.Annotations a where a.`user` = '{userId}'";
+            string query = $"SELECT RAW a FROM Library._default.Annotations a where a.`user` = '{userId}' offset {skip} limit {take}";
 
             var res = await Startup.Cluster.QueryAsync<Annotation>(query);
 
