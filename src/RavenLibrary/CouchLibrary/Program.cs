@@ -14,8 +14,8 @@ namespace CouchLibrary
     {
         public static async Task Main(string[] args)
         {
-            var cluster = await Cluster.ConnectAsync("http://localhost", "Administrator", "Library");
-            Startup.TheBucket = await cluster.BucketAsync("Library");
+            Startup.Cluster = await Cluster.ConnectAsync("http://localhost", "Administrator", "Library");
+            Startup.TheBucket = await Startup.Cluster.BucketAsync("Library");
             CreateHostBuilder(args).Build().Run();
         }
 

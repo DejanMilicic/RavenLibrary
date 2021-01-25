@@ -10,6 +10,16 @@ http://localhost:8091/
 # Define Indexes
 
 CREATE PRIMARY INDEX ON `Library`
+select * from `Library`
+SELECT META().id FROM `Library`
+
+CREATE PRIMARY INDEX ON `default`:`Library`.`_default`.`Annotations`
+
+SELECT * FROM `Annotations` where `user` = 'users/5101859'
+
+SELECT * FROM Library._default.Annotations where `user` = 'users/5101859'
+
+SELECT RAW a FROM Library._default.Annotations a where a.`user` = 'users/5101859'
 
 # Resources
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Couchbase;
 using Couchbase.Core;
@@ -41,22 +42,19 @@ namespace CouchLibrary.Controllers
         public async Task<Annotation> Get(string id)
         {
             var coll = _bucket.Collection("Annotations");
-            var ann = coll.GetAsync(id).Result.ContentAs<Annotation>();
-            //var annotation = _bc.Query<Annotation>().FirstOrDefault(x => x.Id == id);
-            return ann;
+            return (await coll.GetAsync(id)).ContentAs<Annotation>();
         }
 
+        // Annotations/users/5101859-ebooks/56717/0000000002180997833-A
+        // Annotations/users/5101859-ebooks/56717/0000000002180997834-A
+        [HttpGet("/annotations/user/")]
+        public async Task<dynamic> GetUserAnnotations(string userId)
+        {
+            var res = await Startup.Cluster
+                .QueryAsync<Annotation>("SELECT RAW a FROM Library._default.Annotations a where a.`user` = 'users/5101859'");
 
-
-        // Annotations/users/5101859-ebooks/10213/0000000002181037070-A
-        // Annotations/users/5101859-ebooks/10213/0000000002181037070-A
-        //[HttpGet("/annotations/user/")]
-        //public List<Annotation> GetUserAnnotations(string userId)
-        //{
-        //    return _bc.Query<Annotation>()
-        //        .Where(x => x.Id.StartsWith($"Annotations/{userId}"))
-        //        .ToList();
-        //}
+            return await res.Rows.ToListAsync();
+        }
 
         //[HttpGet("/get/")]
         //public Employee Get(string id)
