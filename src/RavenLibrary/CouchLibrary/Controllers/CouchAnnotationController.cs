@@ -45,9 +45,18 @@ namespace CouchLibrary.Controllers
             return (await coll.GetAsync(id)).ContentAs<Annotation>();
         }
 
-
         [HttpGet("/annotations/user/")]
         public async Task<List<Annotation>> GetUserAnnotations(string userId)
+        {
+            string query = $"SELECT RAW a FROM Library._default.Annotations a where a.`user` = '{userId}'";
+
+            var res = await Startup.Cluster.QueryAsync<Annotation>(query);
+
+            return await res.Rows.ToListAsync();
+        }
+
+        [HttpGet("/annotations/user/{skip}/{take}")]
+        public async Task<List<Annotation>> GetUserAnnotationsRange(string userId, int skip, int take)
         {
             string query = $"SELECT RAW a FROM Library._default.Annotations a where a.`user` = '{userId}'";
 
