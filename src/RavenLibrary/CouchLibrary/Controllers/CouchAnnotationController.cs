@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Couchbase.Linq;
 using CouchLibrary.Models;
 using RavenLibrary.Models;
+using Couchbase.Query;
 
 namespace CouchLibrary.Controllers
 {
@@ -39,12 +40,12 @@ namespace CouchLibrary.Controllers
             return (await coll.GetAsync(id)).ContentAs<Annotation>();
         }
 
-        [HttpGet("/annotations/user/")]
+        [HttpGet("/annotations/user")]
         public async Task<List<Annotation>> GetUserAnnotations(string userId)
         {
-            string query = $"SELECT RAW a FROM Library._default.Annotations a where a.`user` = '{userId}'";
+            string query = "SELECT RAW a FROM Library._default.Annotations a where a.`user` = ?";
 
-            var res = await Startup.Cluster.QueryAsync<Annotation>(query);
+            var res = await Startup.Cluster.QueryAsync<Annotation>(query, options => options.Parameter(userId).AdHoc(false));
 
             return await res.Rows.ToListAsync();
         }
@@ -52,29 +53,39 @@ namespace CouchLibrary.Controllers
         [HttpGet("/annotations/user/{skip}/{take}")]
         public async Task<List<Annotation>> GetUserAnnotationsRange(string userId, int skip, int take)
         {
-            string query = $"SELECT RAW a FROM Library._default.Annotations a where a.`user` = '{userId}' offset {skip} limit {take}";
+            string query = "SELECT RAW a FROM Library._default.Annotations a where a.`user` = ? offset ? limit ?";
 
-            var res = await Startup.Cluster.QueryAsync<Annotation>(query);
+            var res = await Startup.Cluster.QueryAsync<Annotation>(query, options=> options.AdHoc(false).Parameter(userId).Parameter(skip).Parameter(take));
 
             return await res.Rows.ToListAsync();
         }
 
-        [HttpGet("/annotations/userbook/")]
-        public async Task<List<Annotation>> GetUserBookAnnotations(string userBookId)
+        [HttpGet("/annotations/userbook")]
+        public async Task<List<Annotation>> GetUserBookAnnotations(string userId)
         {
-            string query = $"SELECT RAW a FROM Library._default.Annotations a where META().id LIKE 'Annotations/{userBookId}/%'";
+            string query = "SELECT RAW a FROM Library._default.Annotations a where META().id LIKE ?";
 
-            var res = await Startup.Cluster.QueryAsync<Annotation>(query);
+            var res = await Startup.Cluster.QueryAsync<Annotation>(query, options => options.Parameter($"Annotations/{userId}-%").AdHoc(false));
 
             return await res.Rows.ToListAsync();
         }
 
         [HttpGet("/annotations/userbook/{skip}/{take}")]
-        public async Task<List<Annotation>> GetUserBookAnnotations(string userBookId, int skip, int take)
+        public async Task<List<Annotation>> GetUserBookAnnotations(string userId, int skip, int take)
         {
-            string query = $"SELECT RAW a FROM Library._default.Annotations a where META().id LIKE 'Annotations/{userBookId}/%' offset {skip} limit {take}";
+            string query = "SELECT RAW a FROM Library._default.Annotations a where META().id LIKE ? offset ? limit ?";
 
-            var res = await Startup.Cluster.QueryAsync<Annotation>(query);
+            var res = await Startup.Cluster.QueryAsync<Annotation>(query, options => options.Parameter($"Annotations/{userId}-%").Parameter(skip).Parameter(take).AdHoc(false));
+
+            return await res.Rows.ToListAsync();
+        }
+
+          [HttpGet("/userbooks")]
+        public async Task<List<Annotation>> GetUserBooks(string userId)
+        {
+            string query = "SELECT RAW a FROM Library._default.UserBooks a where META().id LIKE ?";
+
+            var res = await Startup.Cluster.QueryAsync<Annotation>(query, options => options.Parameter($"UsersBooks/{userId}-%").AdHoc(false));
 
             return await res.Rows.ToListAsync();
         }
