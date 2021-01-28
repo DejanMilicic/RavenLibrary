@@ -73,13 +73,10 @@ namespace RavenLibrary.Controllers
         [HttpGet("/annotations/user/{skip}/{take}")]
         public AsyncQueryResult<Annotation> GetUserAnnotationsRange(string userId, int skip, int take)
         {
-            var userAnnotations = _session
-                .Query<Annotations_ByUser.Result, Annotations_ByUser>()
+            var userAnnotations = _session.Advanced.AsyncDocumentQuery<Annotation, Annotations_ByUser>()
                 .Skip(skip)
                 .Take(take)
-                .Statistics(out QueryStatistics stats)
-                .Where(x => x.UserId == userId)
-                .OfType<Annotation>();
+                .WhereEquals("UserId", userId);
             
             return new AsyncQueryResult<Annotation>(_session, userAnnotations);
         }
@@ -108,8 +105,9 @@ namespace RavenLibrary.Controllers
         [HttpGet("/annotations/userbook/")]
         public AsyncQueryResult<Annotation> GetUserBookAnnotations(string userBookId)
         {
-            var query = _session.Advanced.AsyncDocumentQuery<Annotation>()
-                .WhereStartsWith("id()",$"Annotations/{userBookId}/");
+            var query = _session
+                .Query<Annotation>()
+                .Where(x => x.Id.StartsWith($"Annotations/{userBookId}/"));
 
             return new AsyncQueryResult<Annotation>(_session, query);
         }
@@ -117,28 +115,12 @@ namespace RavenLibrary.Controllers
         [HttpGet("/annotations/userbook/{skip}/{take}")]
         public AsyncQueryResult<Annotation> GetUserBookAnnotations(string userBookId, int skip, int take)
         {
-            var userBookAnnotations = _session
-                .Query<Annotation>()
+            var userBookAnnotations = _session.Advanced.AsyncDocumentQuery<Annotation>()
                 .Skip(skip)
                 .Take(take)
-                .Where(x => x.Id.StartsWith($"Annotations/{userBookId}/"));
+                .WhereStartsWith("id()", $"Annotations/{userBookId}/");
             
             return new AsyncQueryResult<Annotation>(_session, userBookAnnotations);
-        }
-
-        [HttpGet("/annotations/user/after/")]
-        public async Task<IEnumerable<Annotation>> GetUserAnnotationsAfter(string userId, DateTimeOffset after)
-        {
-            // todo implement
-            // will see if this needs to be implemented, or maybe not
-            return new List<Annotation>();
-        }
-
-        [HttpGet("/annotations/user/book/after/")]
-        public async Task<IEnumerable<Annotation>> GetUserBookAnnotationsAfter(string userId, string bookId, DateTimeOffset after)
-        {
-            // todo implement
-            return new List<Annotation>();
         }
     }
 }
