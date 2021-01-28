@@ -71,11 +71,11 @@ namespace CouchLibrary.Controllers
         }
 
         [HttpGet("/annotations/userbook/{skip}/{take}")]
-        public async Task<List<Annotation>> GetUserBookAnnotations(string userId, int skip, int take)
+        public async Task<List<Annotation>> GetUserBookAnnotations(string userId, string bookId, int skip, int take)
         {
-            string query = "SELECT RAW a FROM Library._default.Annotations a where META().id LIKE ? offset ? limit ?";
+            string query = "SELECT RAW a FROM Library._default.Annotations a where a.`user` = ? and a.book = ? offset ? limit ?";
 
-            var res = await Startup.Cluster.QueryAsync<Annotation>(query, options => options.Parameter($"Annotations/{userId}-%").Parameter(skip).Parameter(take).AdHoc(false));
+            var res = await Startup.Cluster.QueryAsync<Annotation>(query, options => options.Parameter(userId).Parameter(bookId).Parameter(skip).Parameter(take).AdHoc(false));
 
             return await res.Rows.ToListAsync();
         }
@@ -83,7 +83,7 @@ namespace CouchLibrary.Controllers
           [HttpGet("/userbooks")]
         public async Task<List<Annotation>> GetUserBooks(string userId)
         {
-            string query = "SELECT RAW a FROM Library._default.UserBooks a where META().id LIKE ?";
+            string query = "SELECT RAW a FROM Library._default.UserBooks a where META().id LIKE ? limit 50";
 
             var res = await Startup.Cluster.QueryAsync<Annotation>(query, options => options.Parameter($"UsersBooks/{userId}-%").AdHoc(false));
 
