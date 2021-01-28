@@ -87,9 +87,8 @@ namespace RavenLibrary.Controllers
         [HttpGet("/annotations/")]
         public AsyncQueryResult<Annotation> GetUserBookAnnotations(string userId, string bookId)
         {
-            var query = _session
-                .Query<Annotation>()
-                .Where(x => x.Id.StartsWith($"Annotations/{userId}-{bookId}/"));
+            var query = _session.Advanced.AsyncDocumentQuery<Annotation>()
+                .WhereStartsWith("id()", $"Annotations/{userId}-{bookId}/");
 
             return new AsyncQueryResult<Annotation>(_session, query);
         }
@@ -97,22 +96,20 @@ namespace RavenLibrary.Controllers
         [HttpGet("/annotations/{skip}/{take}")]
         public AsyncQueryResult<Annotation>  GetUserBookAnnotations(string userId, string bookId, int skip, int take)
         {
-            var userBookAnnotations =  _session
-                .Query<Annotation>()
+            var query = _session.Advanced.AsyncDocumentQuery<Annotation>()
+                .WhereStartsWith("id()", $"Annotations/{userId}-{bookId}/")
                 .Skip(skip)
-                .Take(take)
-                .Where(x => x.Id.StartsWith($"Annotations/{userId}-{bookId}/"));
+                .Take(take);
 
-            return new AsyncQueryResult<Annotation>(_session, userBookAnnotations);
+            return new AsyncQueryResult<Annotation>(_session, query);
         }
 
         
         [HttpGet("/annotations/userbook/")]
         public AsyncQueryResult<Annotation> GetUserBookAnnotations(string userBookId)
         {
-            var query = _session
-                .Query<Annotation>()
-                .Where(x => x.Id.StartsWith($"Annotations/{userBookId}/"));
+            var query = _session.Advanced.AsyncDocumentQuery<Annotation>()
+                .WhereStartsWith("id()",$"Annotations/{userBookId}/");
 
             return new AsyncQueryResult<Annotation>(_session, query);
         }

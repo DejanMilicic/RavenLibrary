@@ -48,7 +48,7 @@ namespace RavenLibrary
 
                 store.Initialize();
 
-                IndexCreation.CreateIndexes(typeof(UserBook_ByUser_ByBook).Assembly, store);
+              //  IndexCreation.CreateIndexes(typeof(UserBook_ByUser_ByBook).Assembly, store);
                 
                 return store;
             });
