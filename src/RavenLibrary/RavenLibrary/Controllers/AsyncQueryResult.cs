@@ -32,7 +32,7 @@ namespace RavenLibrary.Controllers
             {
                 var response = context.HttpContext.Response;
                 response.ContentType = "application/json";
-                await _session.Advanced.StreamIntoAsync(_query, response.Body, context.HttpContext.RequestAborted);
+                await _query.ToStreamAsync(response.Body, context.HttpContext.RequestAborted);
             }
         }
 

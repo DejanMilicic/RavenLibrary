@@ -15,11 +15,11 @@ namespace RavenLibrary.Controllers
     [Route("[controller]")]
     public class AnnotationController : ControllerBase
     {
-        private readonly IDocumentStore _store;
+        private readonly IAsyncDocumentSession _session;
 
-        public AnnotationController(IDocumentStore store)
+        public AnnotationController(IAsyncDocumentSession session)
         {
-            this._store = store;
+            _session = session;
         }
 
     
@@ -35,16 +35,14 @@ namespace RavenLibrary.Controllers
         // }
 
         [HttpGet("/annotations/user/{skip}/{take}")]
-        public async Task<object> GetUserAnnotationsRange(string userId, int skip, int take)
+        public AsyncQueryResult<Annotation> GetUserAnnotationsRange(string userId, int skip, int take)
         {
-            using var session = _store.OpenAsyncSession();
-            var userAnnotations = await session.Advanced.AsyncDocumentQuery<Annotation, Annotations_ByUser>()
+            var query = _session.Advanced.AsyncDocumentQuery<Annotation, Annotations_ByUser>()
                 .Skip(skip)
                 .Take(take)
-                .WhereEquals("UserId", userId)
-                .ToListAsync();
+                .WhereEquals("UserId", userId);
             
-            return userAnnotations;
+            return new AsyncQueryResult<Annotation>(_session, query);
         }
 
         // [HttpGet("/annotations/")]
@@ -80,16 +78,14 @@ namespace RavenLibrary.Controllers
         // }
 
         [HttpGet("/annotations/userbook/{skip}/{take}")]
-        public async Task<object> GetUserBookAnnotations(string userBookId, int skip, int take)
+        public AsyncQueryResult<Annotation> GetUserBookAnnotations(string userBookId, int skip, int take)
         {
-            using var session = _store.OpenAsyncSession();
-            var userBookAnnotations = await session.Advanced.AsyncDocumentQuery<Annotation>()
+            var query = _session.Advanced.AsyncDocumentQuery<Annotation>()
                 .Skip(skip)
                 .Take(take)
-                .WhereStartsWith("id()", $"Annotations/{userBookId}/")
-                .ToListAsync();
+                .WhereStartsWith("id()", $"Annotations/{userBookId}/");
             
-            return userBookAnnotations;
+            return new AsyncQueryResult<Annotation>(_session, query);
         }
     }
 }
